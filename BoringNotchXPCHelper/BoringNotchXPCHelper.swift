@@ -10,8 +10,13 @@ import Foundation
 import ApplicationServices
 import IOKit
 import CoreGraphics
+import os
 
 class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
+    private static let logger = os.Logger(
+        subsystem: "theboringteam.boringnotch.BoringNotchXPCHelper",
+        category: "helper"
+    )
     
     @objc func isAccessibilityAuthorized(with reply: @escaping (Bool) -> Void) {
         reply(AXIsProcessTrusted())
@@ -191,44 +196,20 @@ class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
         }()
     }
 
-    // MARK: - Application Bundle Icon Management (Unsandboxed)
+    // MARK: - Application Bundle Icon Management (Validated)
 
     @objc func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool, with reply: @escaping (Bool) -> Void) {
-        let image: NSImage?
-        if let data = imageData {
-            image = NSImage(data: data)
-        } else {
-            image = nil
+        let requestedURL = URL(fileURLWithPath: bundlePath).standardizedFileURL
+        let expectedURL = ServiceDelegate.enclosingAppBundleURL
+
+        guard requestedURL.path == expectedURL.path,
+              requestedURL.pathExtension == "app" else {
+            Self.logger.error("Rejected setApplicationBundleIcon for unauthorized path: \(bundlePath, privacy: .public)")
+            reply(false)
+            return
         }
 
-        // 1. Set or remove custom icon on the .app bundle using NSWorkspace
-        let success = NSWorkspace.shared.setIcon(image, forFile: bundlePath, options: [])
-
-        // 2. Touch the bundle path to update its modification date so LaunchServices and Finder detect changes
-        let now = Date()
-        try? FileManager.default.setAttributes([.modificationDate: now], ofItemAtPath: bundlePath)
-
-        // 3. Notify NSWorkspace of file system change
-        NSWorkspace.shared.noteFileSystemChanged(bundlePath)
-
-        // 4. Force LaunchServices to re-register the application bundle
-        let lsregisterPath = "/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister"
-        if FileManager.default.isExecutableFile(atPath: lsregisterPath) {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: lsregisterPath)
-            process.arguments = ["-f", "-R", bundlePath]
-            try? process.run()
-            process.waitUntilExit()
-        }
-
-        // 5. If requested (e.g. user changed icon in Settings), restart Dock to reload icon cache
-        if refreshDock {
-            let killProcess = Process()
-            killProcess.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
-            killProcess.arguments = ["Dock"]
-            try? killProcess.run()
-        }
-
-        reply(success)
+        // Do not mutate the signed .app bundle on disk to preserve code signature and Sparkle compatibility.
+        reply(true)
     }
 }

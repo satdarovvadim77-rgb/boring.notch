@@ -69,7 +69,9 @@ class SettingsWindowController: NSWindowController {
     func showWindow() {
         // Set app to regular mode first
         NSApp.setActivationPolicy(.regular)
-        AppIconManager.shared.restoreSavedAppIcon()
+        Task { @MainActor in
+            AppIconManager.shared.restoreSavedAppIcon()
+        }
         
         // If window is already visible, bring it to front properly
         if window?.isVisible == true {
@@ -118,7 +120,6 @@ extension SettingsWindowController: NSWindowDelegate {
     func windowDidBecomeKey(_ notification: Notification) {
         // Ensure app is in regular mode when window becomes key
         NSApp.setActivationPolicy(.regular)
-        AppIconManager.shared.restoreSavedAppIcon()
     }
     
     func windowDidResignKey(_ notification: Notification) {

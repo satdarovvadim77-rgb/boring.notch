@@ -141,8 +141,9 @@ struct AlbumArtView: View {
 
     @ViewBuilder
     private var appIconOverlay: some View {
-        if vm.notchState == .open && !musicManager.usingAppIconForArtwork {
-            AppIcon(for: musicManager.bundleIdentifier ?? YandexMusicHelper.bundleIdentifier)
+        if vm.notchState == .open && !musicManager.usingAppIconForArtwork,
+           let bundleID = musicManager.bundleIdentifier, !bundleID.isEmpty {
+            AppIcon(for: bundleID)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 30, height: 30)
@@ -371,8 +372,6 @@ struct NotchHomeView: View {
             if !isRunning {
                 return false
             }
-        } else if YandexMusicHelper.shared.isRunning {
-            // Yandex Music is running
         } else {
             return false
         }

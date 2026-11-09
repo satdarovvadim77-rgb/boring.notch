@@ -11,11 +11,13 @@ import Defaults
 private let availableDirectories = FileManager
     .default
     .urls(for: .documentDirectory, in: .userDomainMask)
-let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-let bundleIdentifier = Bundle.main.bundleIdentifier!
+let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    ?? FileManager.default.temporaryDirectory
+let bundleIdentifier = Bundle.main.bundleIdentifier ?? "theboringteam.boringnotch"
 let appVersion = "\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""))"
 
-let temporaryDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+let temporaryDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+    ?? FileManager.default.temporaryDirectory
 let spacing: CGFloat = 16
 
 struct CustomVisualizer: Codable, Hashable, Equatable, Defaults.Serializable {
@@ -52,6 +54,7 @@ extension Notification.Name {
 enum MediaControllerType: String, CaseIterable, Identifiable, Defaults.Serializable {
     case nowPlaying = "Now Playing"
     case yandexMusic = "Yandex Music"
+    case appleMusic = "Apple Music"
     case spotify = "Spotify"
     case youtubeMusic = "YouTube Music"
     
@@ -316,11 +319,12 @@ extension Defaults.Keys {
     
     // Helper to determine the default media controller based on NowPlaying deprecation status
     static var defaultMediaController: MediaControllerType {
-        if MusicManager.shared.isNowPlayingDeprecated {
-            return .yandexMusic
-        } else {
-            return .yandexMusic
+        if Thread.isMainThread {
+            return MainActor.assumeIsolated {
+                MusicManager.shared.isNowPlayingDeprecated ? .appleMusic : .yandexMusic
+            }
         }
+        return .yandexMusic
     }
 
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCache_v1", default: false)

@@ -18,29 +18,29 @@ final class YandexMusicController: ObservableObject, MediaControllerProtocol {
         $playbackState.eraseToAnyPublisher()
     }
 
-    var supportsVolumeControl: Bool { true }
-    var supportsFavorite: Bool { true }
+    var supportsVolumeControl: Bool { false }
+    var supportsFavorite: Bool { false }
 
     private var cancellables = Set<AnyCancellable>()
     private var nowPlayingController: NowPlayingController?
 
-    init() {
-        if let controller = NowPlayingController() {
-            self.nowPlayingController = controller
-            controller.playbackStatePublisher
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] state in
-                    guard let self = self else { return }
-                    // If the update comes from Yandex Music, or if Yandex Music is running and this is the active track
-                    if state.bundleIdentifier == YandexMusicHelper.bundleIdentifier ||
-                       (state.bundleIdentifier.isEmpty && YandexMusicHelper.shared.isRunning) {
-                        var updated = state
-                        updated.bundleIdentifier = YandexMusicHelper.bundleIdentifier
-                        self.playbackState = updated
-                    }
-                }
-                .store(in: &cancellables)
+    init?() {
+        guard let controller = NowPlayingController() else {
+            return nil
         }
+        self.nowPlayingController = controller
+        controller.playbackStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                let lowerBundle = state.bundleIdentifier.lowercased()
+                if state.bundleIdentifier == YandexMusicHelper.bundleIdentifier || lowerBundle.contains("yandex") {
+                    var updated = state
+                    updated.bundleIdentifier = YandexMusicHelper.bundleIdentifier
+                    self.playbackState = updated
+                }
+            }
+            .store(in: &cancellables)
     }
 
     func updatePlaybackInfo() async {
@@ -48,22 +48,19 @@ final class YandexMusicController: ObservableObject, MediaControllerProtocol {
     }
 
     func isActive() -> Bool {
-        return YandexMusicHelper.shared.isRunning
+        YandexMusicHelper.shared.isRunning
     }
 
     func play() async {
         await nowPlayingController?.play()
-        playbackState.isPlaying = true
     }
 
     func pause() async {
         await nowPlayingController?.pause()
-        playbackState.isPlaying = false
     }
 
     func togglePlay() async {
         await nowPlayingController?.togglePlay()
-        playbackState.isPlaying.toggle()
     }
 
     func nextTrack() async {
@@ -107,11 +104,15 @@ final class YandexMusicController: ObservableObject, MediaControllerProtocol {
     }
 
     func setFavorite(_ favorite: Bool) async {
-        playbackState.isFavorite = favorite
+        if !YandexMusicHelper.shared.triggerAccessibilityAction(isLike: true) {
+            await nowPlayingController?.setFavorite(favorite)
+        }
     }
 
     func dislike() async {
-        playbackState.isFavorite = false
+        if !YandexMusicHelper.shared.triggerAccessibilityAction(isLike: false) {
+            await nowPlayingController?.dislike()
+        }
     }
 
     func setVolume(_ level: Double) async {

@@ -230,7 +230,7 @@ final class XPCHelperClient {
             }
             return result
         } catch {
-            print("Failed to set app bundle icon via XPC helper: \(error)")
+            Logger.log("Failed to set app bundle icon via XPC helper: \(error)", category: .debug)
             return false
         }
     }

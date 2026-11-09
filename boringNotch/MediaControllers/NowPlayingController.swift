@@ -10,12 +10,13 @@ import Combine
 import Foundation
 
 final class NowPlayingController: ObservableObject, MediaControllerProtocol {
-    // Stub for now to conform with ControllerProtocol
-    func updatePlaybackInfo() async {}
+    func updatePlaybackInfo() async {
+        await fetchFavoriteStateIfSupported()
+    }
 
     // MARK: - Properties
     @Published private(set) var playbackState: PlaybackState = .init(
-        bundleIdentifier: YandexMusicHelper.bundleIdentifier
+        bundleIdentifier: "com.apple.Music"
     )
 
     var playbackStatePublisher: AnyPublisher<PlaybackState, Never> {
@@ -24,34 +25,35 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
 
     var supportsVolumeControl: Bool {
         let bundleID = playbackState.bundleIdentifier.lowercased()
-        return bundleID == "com.apple.music" || bundleID == "com.spotify.client" || bundleID.contains("yandex") || YandexMusicHelper.shared.isRunning
+        return bundleID == "com.apple.music" || bundleID == "com.spotify.client"
     }
 
     var supportsFavorite: Bool {
         let bundleID = playbackState.bundleIdentifier.lowercased()
-        return bundleID == "com.apple.music" || bundleID.contains("yandex") || YandexMusicHelper.shared.isRunning
+        return bundleID == "com.apple.music"
     }
 
     func setFavorite(_ favorite: Bool) async {
         let bundleID = playbackState.bundleIdentifier.lowercased()
         
         if bundleID == "com.apple.music" {
-            let script = """
-            tell application "Music"
-                try
-                    set favorited of current track to \(favorite ? "true" : "false")
-                end try
-            end tell
-            """
-            try? await AppleScriptHelper.executeVoid(script)
+            let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
+            if !runningApps.isEmpty {
+                let script = """
+                tell application "Music"
+                    try
+                        set favorited of current track to \(favorite ? "true" : "false")
+                    end try
+                end tell
+                """
+                try? await AppleScriptHelper.executeVoid(script)
+            }
         } else {
             // MediaRemote like command
             MRMediaRemoteSendCommandFunction(15, nil)
             MRMediaRemoteSendCommandFunction(128, nil)
         }
         
-        // Update the favorite state locally and fetch updated info
-        playbackState.isFavorite = favorite
         try? await Task.sleep(for: .milliseconds(150))
         await updatePlaybackInfo()
     }
@@ -60,14 +62,17 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         let bundleID = playbackState.bundleIdentifier.lowercased()
         
         if bundleID == "com.apple.music" {
-            let script = """
-            tell application "Music"
-                try
-                    set disliked of current track to true
-                end try
-            end tell
-            """
-            try? await AppleScriptHelper.executeVoid(script)
+            let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
+            if !runningApps.isEmpty {
+                let script = """
+                tell application "Music"
+                    try
+                        set disliked of current track to true
+                    end try
+                end tell
+                """
+                try? await AppleScriptHelper.executeVoid(script)
+            }
         } else {
             // MediaRemote dislike command
             MRMediaRemoteSendCommandFunction(14, nil)
@@ -75,7 +80,6 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
             MRMediaRemoteSendCommandFunction(129, nil)
         }
         
-        playbackState.isFavorite = false
         try? await Task.sleep(for: .milliseconds(150))
         await updatePlaybackInfo()
     }
@@ -128,8 +132,7 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         streamTask?.cancel()
         
         if let pipeHandler = self.pipeHandler {
-            Task { await pipeHandler.close()
-            }
+            Task { await pipeHandler.close() }
         }
         
         if let process = self.process {
@@ -186,8 +189,6 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
     }
     
     func setVolume(_ level: Double) async {
-        // MediaRemote framework doesn't provide direct volume control for the active audio session
-        // As a workaround, try to control the currently active music app directly
         let clampedLevel = max(0.0, min(1.0, level))
         let volumePercentage = Int(clampedLevel * 100)
         
@@ -269,7 +270,6 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
             newPlaybackState.currentTime = 0
         }
 
-        
         if let shuffleMode = payload.shuffleMode {
             newPlaybackState.isShuffled = shuffleMode != 1
         } else if !diff {
@@ -338,7 +338,6 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
             }
         }
     }
-    
 }
 
 struct NowPlayingUpdate: Codable {
@@ -383,7 +382,7 @@ actor JSONLinesPipeHandler {
                 await onLine(decodedObject)
             }
         } catch {
-            print("Error processing JSON stream: \(error)")
+            Logger.log("Error processing JSON stream: \(error.localizedDescription)", category: .error)
         }
     }
     
@@ -421,7 +420,6 @@ actor JSONLinesPipeHandler {
     
     private func readData() async throws -> Data {
         return try await withCheckedThrowingContinuation { continuation in
-            
             fileHandle.readabilityHandler = { handle in
                 let data = handle.availableData
                 handle.readabilityHandler = nil
@@ -436,7 +434,7 @@ actor JSONLinesPipeHandler {
             try fileHandle.close()
             try pipe.fileHandleForWriting.close()
         } catch {
-            print("Error closing pipe handler: \(error)")
+            Logger.log("Error closing pipe handler: \(error.localizedDescription)", category: .error)
         }
     }
 }

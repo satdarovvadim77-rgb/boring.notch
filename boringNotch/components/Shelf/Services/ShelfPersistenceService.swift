@@ -41,7 +41,7 @@ final class ShelfPersistenceService {
         do {
             // Parse as JSON array to get individual item data
             guard let jsonArray = try JSONSerialization.jsonObject(with: data) as? [Any] else {
-                print("⚠️ Shelf persistence file is not a valid JSON array")
+                Logger.log("⚠️ Shelf persistence file is not a valid JSON array", category: .debug)
                 return []
             }
             
@@ -55,17 +55,17 @@ final class ShelfPersistenceService {
                     validItems.append(item)
                 } catch {
                     failedCount += 1
-                    print("⚠️ Failed to decode shelf item at index \(index): \(error.localizedDescription)")
+                    Logger.log("⚠️ Failed to decode shelf item at index \(index): \(error.localizedDescription)", category: .debug)
                 }
             }
             
             if failedCount > 0 {
-                print("📦 Successfully loaded \(validItems.count) shelf items, discarded \(failedCount) corrupted items")
+                Logger.log("📦 Successfully loaded \(validItems.count) shelf items, discarded \(failedCount) corrupted items", category: .debug)
             }
             
             return validItems
         } catch {
-            print("❌ Failed to parse shelf persistence file: \(error.localizedDescription)")
+            Logger.log("❌ Failed to parse shelf persistence file: \(error.localizedDescription)", category: .debug)
             return []
         }
     }
@@ -75,7 +75,7 @@ final class ShelfPersistenceService {
             let data = try encoder.encode(items)
             try data.write(to: fileURL, options: Data.WritingOptions.atomic)
         } catch {
-            print("Failed to save shelf items: \(error.localizedDescription)")
+            Logger.log("Failed to save shelf items: \(error.localizedDescription)", category: .debug)
         }
     }
 }

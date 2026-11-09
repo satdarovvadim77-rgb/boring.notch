@@ -113,7 +113,7 @@ class CalendarService: CalendarServiceProviding {
         do {
             try store.save(reminder, commit: true)
         } catch {
-            print("Failed to update reminder completion: \(error)")
+            Logger.log("Failed to update reminder completion: \(error)", category: .debug)
         }
     }
 }

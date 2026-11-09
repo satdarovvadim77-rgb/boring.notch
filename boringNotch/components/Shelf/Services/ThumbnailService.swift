@@ -57,7 +57,7 @@ actor ThumbnailService {
         let scale = await MainActor.run { NSScreen.main?.backingScaleFactor ?? 2.0 }
         
         return await url.accessSecurityScopedResource { scopedURL in
-            NSLog("🔐 ThumbnailService: obtaining security scope for \(scopedURL.path)")
+            Logger.log("🔐 ThumbnailService: obtaining security scope for \(scopedURL.path)", category: .debug)
             let request = QLThumbnailGenerator.Request(
                 fileAt: scopedURL,
                 size: size,
@@ -69,11 +69,11 @@ actor ThumbnailService {
             return await withCheckedContinuation { (continuation: CheckedContinuation<NSImage?, Never>) in
                 thumbnailGenerator.generateBestRepresentation(for: request) { representation, error in
                     if let rep = representation {
-                        NSLog("🔍 ThumbnailService: generated thumbnail for \(scopedURL.path)")
+                        Logger.log("🔍 ThumbnailService: generated thumbnail for \(scopedURL.path)", category: .debug)
                         continuation.resume(returning: rep.nsImage)
                     } else {
                         if let err = error { 
-                            NSLog("⚠️ ThumbnailService: thumbnail error for \(scopedURL.path): \(err.localizedDescription)") 
+                            Logger.log("⚠️ ThumbnailService: thumbnail error for \(scopedURL.path): \(err.localizedDescription)", category: .debug) 
                         }
                         continuation.resume(returning: nil)
                     }

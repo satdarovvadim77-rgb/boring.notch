@@ -107,11 +107,11 @@ class BoringViewCoordinator: ObservableObject {
             if let screen = NSScreen.screens.first(where: { $0.localizedName == legacyName }),
                let uuid = screen.displayUUID {
                 preferredScreenUUID = uuid
-                NSLog("✅ Migrated display preference from name '\(legacyName)' to UUID '\(uuid)'")
+                Logger.log("✅ Migrated display preference from name '\(legacyName)' to UUID '\(uuid)'", category: .debug)
             } else {
                 // Fallback to main screen if legacy screen not found
                 preferredScreenUUID = NSScreen.main?.displayUUID
-                NSLog("⚠️ Could not find display named '\(legacyName)', falling back to main screen")
+                Logger.log("⚠️ Could not find display named '\(legacyName)', falling back to main screen", category: .debug)
             }
             // Clear legacy value after migration
             legacyPreferredScreenName = nil
@@ -214,12 +214,12 @@ class BoringViewCoordinator: ObservableObject {
             let value = CGFloat((formatter.number(from: decodedData.value) ?? 0.0).floatValue)
             let icon = decodedData.icon
 
-            print("Decoded: \(decodedData), Parsed value: \(value)")
+            Logger.log("Decoded: \(decodedData), Parsed value: \(value)", category: .debug)
 
             toggleSneakPeek(status: decodedData.show, type: contentType, value: value, icon: icon)
 
         } else {
-            print("Failed to decode JSON data")
+            Logger.log("Failed to decode JSON data", category: .debug)
         }
     }
 

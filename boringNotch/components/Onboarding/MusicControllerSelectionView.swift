@@ -16,7 +16,7 @@ struct MusicControllerSelectionView: View {
     
     private var availableMediaControllers: [MediaControllerType] {
         if MusicManager.shared.isNowPlayingDeprecated {
-            return MediaControllerType.allCases.filter { $0 != .nowPlaying }
+            return MediaControllerType.allCases.filter { $0 != .nowPlaying && $0 != .yandexMusic }
         } else {
             return MediaControllerType.allCases
         }
@@ -125,7 +125,9 @@ extension MediaControllerType {
         case .nowPlaying:
             return "Works with most media apps, including browsers, to detect what's playing. Note: This may be removed in a future macOS version."
         case .yandexMusic:
-            return "Direct integration with Yandex Music desktop app. Supports Likes, Dislikes, Repeat, and Shuffle."
+            return "Direct integration with Yandex Music desktop app."
+        case .appleMusic:
+            return "Connects directly to the Apple Music app."
         case .spotify:
             return "Connects directly to the Spotify app."
         case .youtubeMusic:

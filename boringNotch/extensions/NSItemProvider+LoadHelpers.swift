@@ -27,12 +27,12 @@ extension NSItemProvider {
     
     /// Loads raw data for the given type identifier
     func loadData() async -> Data? {
-        NSLog(String(describing: self.registeredTypeIdentifiers))
+        Logger.log(String(describing: self.registeredTypeIdentifiers), category: .debug)
         guard hasItemConformingToTypeIdentifier(UTType.data.identifier) else { return nil }
         return await withCheckedContinuation { (cont: CheckedContinuation<Data?, Never>) in
             loadItem(forTypeIdentifier: UTType.data.identifier, options: nil) { item, error in
                 if let error = error {
-                    print("Error loading data for type \(UTType.data.identifier): \(error.localizedDescription)")
+                    Logger.log("Error loading data for type \(UTType.data.identifier): \(error.localizedDescription)", category: .debug)
                     cont.resume(returning: nil)
                     return
                 }
@@ -49,19 +49,19 @@ extension NSItemProvider {
                     do {
                         // Delete the file first
                         try fileManager.removeItem(at: url)
-                        print("Deleted file: \(url.path)")
+                        Logger.log("Deleted file: \(url.path)", category: .debug)
 
                         // Check folder contents
                         let contents = try fileManager.contentsOfDirectory(atPath: folderURL.path)
                         if contents.isEmpty {
                             try fileManager.removeItem(at: folderURL)
-                            print("Folder was empty, deleted folder: \(folderURL.path)")
+                            Logger.log("Folder was empty, deleted folder: \(folderURL.path)", category: .debug)
                         } else {
-                            print("Folder not deleted — it still contains \(contents.count) item(s).")
+                            Logger.log("Folder not deleted — it still contains \(contents.count) item(s).", category: .debug)
                         }
 
                     } catch {
-                        print("Error: \(error.localizedDescription)")
+                        Logger.log("Error: \(error.localizedDescription)", category: .debug)
                     }
                     
                     cont.resume(returning: data)
@@ -104,7 +104,7 @@ extension NSItemProvider {
         await withCheckedContinuation { (cont: CheckedContinuation<URL?, Never>) in
             self.loadItem(forTypeIdentifier: typeIdentifier, options: nil) { item, error in
                 if let error = error {
-                    print("❌ Error loading item for type \(typeIdentifier): \(error.localizedDescription)")
+                    Logger.log("❌ Error loading item for type \(typeIdentifier): \(error.localizedDescription)", category: .debug)
                     cont.resume(returning: nil)
                     return
                 }

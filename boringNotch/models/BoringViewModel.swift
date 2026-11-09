@@ -9,9 +9,10 @@ import Combine
 import Defaults
 import SwiftUI
 
+@MainActor
 class BoringViewModel: NSObject, ObservableObject {
-    @ObservedObject var coordinator = BoringViewCoordinator.shared
-    @ObservedObject var detector = FullscreenMediaDetector.shared
+    let coordinator: BoringViewCoordinator
+    let detector: FullscreenMediaDetector
 
     let animationLibrary: BoringAnimations = .init()
     let animation: Animation?
@@ -37,20 +38,24 @@ class BoringViewModel: NSObject, ObservableObject {
     @Published var notchSize: CGSize = getClosedNotchSize()
     @Published var closedNotchSize: CGSize = getClosedNotchSize()
     
-    let webcamManager = WebcamManager.shared
+    let webcamManager: WebcamManager
     @Published var isCameraExpanded: Bool = false
     @Published var isRequestingAuthorization: Bool = false
     
-    deinit {
-        destroy()
-    }
-
     func destroy() {
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
     }
 
-    init(screenUUID: String? = nil) {
+    init(
+        screenUUID: String? = nil,
+        coordinator: BoringViewCoordinator = .shared,
+        detector: FullscreenMediaDetector = .shared,
+        webcamManager: WebcamManager = .shared
+    ) {
+        self.coordinator = coordinator
+        self.detector = detector
+        self.webcamManager = webcamManager
         animation = animationLibrary.animation
 
         super.init()
@@ -85,23 +90,19 @@ class BoringViewModel: NSObject, ObservableObject {
     }
     
     private func setupDetectorObserver() {
-        // Publisher for the user’s fullscreen detection setting
         let enabledPublisher = Defaults
             .publisher(.hideNotchOption)
             .map(\.newValue)
             .map { $0 != .never }
             .removeDuplicates()
 
-        // Publisher for the current screen UUID (non-nil, distinct)
         let screenPublisher = $screenUUID
             .compactMap { $0 }
             .removeDuplicates()
 
-        // Publisher for fullscreen status dictionary
         let fullscreenStatusPublisher = detector.$fullscreenStatus
             .removeDuplicates()
 
-        // Combine all three: screen UUID, fullscreen status, and enabled setting
         Publishers.CombineLatest3(screenPublisher, fullscreenStatusPublisher, enabledPublisher)
             .map { screenUUID, fullscreenStatus, enabled in
                 let isFullscreen = fullscreenStatus[screenUUID] ?? false
@@ -117,7 +118,6 @@ class BoringViewModel: NSObject, ObservableObject {
             .store(in: &cancellables)
     }
 
-    // Computed property for effective notch height
     var effectiveClosedNotchHeight: CGFloat {
         let currentScreen = screenUUID.flatMap { NSScreen.screen(withUUID: $0) }
         let noNotchAndFullscreen = hideOnClosed && (currentScreen?.safeAreaInsets.top ?? 0 <= 0 || currentScreen == nil)
@@ -161,7 +161,6 @@ class BoringViewModel: NSObject, ObservableObject {
         case .denied, .restricted:
             DispatchQueue.main.async {
                 NSApp.setActivationPolicy(.regular)
-                AppIconManager.shared.restoreSavedAppIcon()
                 NSApp.activate(ignoringOtherApps: true)
 
                 let alert = NSAlert()
@@ -195,13 +194,10 @@ class BoringViewModel: NSObject, ObservableObject {
     func isMouseHovering(position: NSPoint = NSEvent.mouseLocation) -> Bool {
         let screenFrame = getScreenFrame(screenUUID)
         if let frame = screenFrame {
-            
             let baseY = frame.maxY - notchSize.height
             let baseX = frame.midX - notchSize.width / 2
-            
             return position.y >= baseY && position.x >= baseX && position.x <= baseX + notchSize.width
         }
-        
         return false
     }
 
@@ -209,12 +205,12 @@ class BoringViewModel: NSObject, ObservableObject {
         self.notchSize = openNotchSize
         self.notchState = .open
         
-        // Force music information update when notch is opened
-        MusicManager.shared.forceUpdate()
+        Task { @MainActor in
+            MusicManager.shared.forceUpdate()
+        }
     }
 
     func close() {
-        // Do not close while a share picker or sharing service is active
         if SharingStateManager.shared.preventNotchClose {
             return
         }
@@ -225,9 +221,7 @@ class BoringViewModel: NSObject, ObservableObject {
         self.coordinator.sneakPeek.show = false
         self.edgeAutoOpenActive = false
 
-        // Set the current view to shelf if it contains files and the user enables openShelfByDefault
-        // Otherwise, if the user has not enabled openLastShelfByDefault, set the view to home
-    if !ShelfStateViewModel.shared.isEmpty && Defaults[.openShelfByDefault] {
+        if !ShelfStateViewModel.shared.isEmpty && Defaults[.openShelfByDefault] {
             coordinator.currentView = .shelf
         } else if !coordinator.openLastTabByDefault {
             coordinator.currentView = .home

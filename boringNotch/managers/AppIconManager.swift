@@ -9,13 +9,17 @@ import AppKit
 import Defaults
 import Foundation
 
+@MainActor
 final class AppIconManager: ObservableObject {
     static let shared = AppIconManager()
 
-    private init() {}
+    private var appliedIconID: String?
+
+    init() {}
 
     var customIconsDirectory: URL {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
         let dir = appSupport.appendingPathComponent("boringNotch/CustomIcons", isDirectory: true)
         if !FileManager.default.fileExists(atPath: dir.path) {
             try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -112,7 +116,7 @@ final class AppIconManager: ObservableObject {
             applyIcon(id: id)
             return item
         } catch {
-            print("Failed to save custom icon: \(error)")
+            Logger.log("Failed to save custom icon: \(error.localizedDescription)", category: .error)
             return nil
         }
     }
@@ -130,61 +134,35 @@ final class AppIconManager: ObservableObject {
         }
     }
 
+    /// Applies the selected icon in runtime (Dock & application icon) without mutating the .app bundle on disk,
+    /// preserving code signing integrity and Sparkle update compatibility.
     func applyIcon(id: String, refreshDock: Bool = true) {
         Defaults[.selectedAppIconID] = id
+        appliedIconID = id
+        applyRuntimeApplicationIcon(for: id)
+    }
 
-        let bundlePath = Bundle.main.bundlePath
+    func restoreSavedAppIcon() {
+        let currentID = Defaults[.selectedAppIconID]
+        guard appliedIconID != currentID || NSApp.applicationIconImage == nil else { return }
+        appliedIconID = currentID
+        applyRuntimeApplicationIcon(for: currentID)
+    }
 
-        let targetImage: NSImage?
-        let pngData: Data?
-
+    private func applyRuntimeApplicationIcon(for id: String) {
         if id == "default" {
-            // Revert to original app icon from bundle assets
-            targetImage = NSImage(named: "logo2") ?? NSImage(named: "AppIcon")
-            pngData = nil
-            if let targetImage {
-                NSApp.applicationIconImage = targetImage
+            if let defaultImg = NSImage(named: "logo2") ?? NSImage(named: "AppIcon") {
+                NSApp.applicationIconImage = defaultImg
             } else {
                 NSApp.applicationIconImage = nil
             }
         } else if let item = Defaults[.customAppIcons].first(where: { $0.id == id }),
                   let image = loadImage(for: item) {
-            targetImage = image
-            pngData = {
-                if let bitmap = image.representations.compactMap({ $0 as? NSBitmapImageRep }).first,
-                   let data = bitmap.representation(using: .png, properties: [:]) {
-                    return data
-                }
-                if let tiffData = image.tiffRepresentation,
-                   let bitmap = NSBitmapImageRep(data: tiffData) {
-                    return bitmap.representation(using: .png, properties: [:])
-                }
-                return nil
-            }()
             NSApp.applicationIconImage = image
         } else {
-            targetImage = nil
-            pngData = nil
             NSApp.applicationIconImage = nil
         }
 
         NSApp.dockTile.display()
-
-        // 1. Direct attempt (works if running unsandboxed or bundle is directly writable)
-        _ = NSWorkspace.shared.setIcon(id == "default" ? nil : targetImage, forFile: bundlePath, options: [])
-
-        // 2. Persistent on-disk bundle update via unsandboxed BoringNotchXPCHelper
-        Task {
-            _ = await XPCHelperClient.shared.setApplicationBundleIcon(
-                imageData: pngData,
-                bundlePath: bundlePath,
-                refreshDock: refreshDock
-            )
-        }
-    }
-
-    func restoreSavedAppIcon() {
-        let currentID = Defaults[.selectedAppIconID]
-        applyIcon(id: currentID, refreshDock: false)
     }
 }

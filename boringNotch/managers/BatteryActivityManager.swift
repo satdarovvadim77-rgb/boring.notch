@@ -219,11 +219,9 @@ class BatteryActivityManager {
             }
             
             guard let sources = IOPSCopyPowerSourcesList(snapshot)?.takeRetainedValue() as? [CFTypeRef],
-                !sources.isEmpty else {
+                  let source = sources.first else {
                 throw BatteryError.batteryInfoUnavailable("No power sources available")
             }
-            
-            let source = sources.first!
             
             guard let description = IOPSGetPowerSourceDescription(snapshot, source)?.takeUnretainedValue() as? [String: Any] else {
                 throw BatteryError.batteryInfoUnavailable("Could not get power source description")
@@ -264,16 +262,16 @@ class BatteryActivityManager {
             return batteryInfo
             
         } catch BatteryError.powerSourceUnavailable {
-            print("⚠️ Error: Power source information unavailable")
+            Logger.log("⚠️ Error: Power source information unavailable", category: .debug)
             return defaultBatteryInfo
         } catch BatteryError.batteryInfoUnavailable(let reason) {
-            print("⚠️ Error: Battery information unavailable - \(reason)")
+            Logger.log("⚠️ Error: Battery information unavailable - \(reason)", category: .debug)
             return defaultBatteryInfo
         } catch BatteryError.batteryParameterMissing(let parameter) {
-            print("⚠️ Error: Battery parameter missing - \(parameter)")
+            Logger.log("⚠️ Error: Battery parameter missing - \(parameter)", category: .debug)
             return defaultBatteryInfo
         } catch {
-            print("⚠️ Error: Unexpected error getting battery info - \(error.localizedDescription)")
+            Logger.log("⚠️ Error: Unexpected error getting battery info - \(error.localizedDescription)", category: .debug)
             return defaultBatteryInfo
         }
     }

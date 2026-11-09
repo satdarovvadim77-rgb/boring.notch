@@ -116,7 +116,7 @@ final class ShelfStateViewModel: ObservableObject {
         let bookmark = Bookmark(data: bookmarkData)
         let result = bookmark.resolve()
         if let refreshed = result.refreshedData, refreshed != bookmarkData {
-            NSLog("Bookmark for \(item) stale; refreshing")
+            Logger.log("Bookmark for \(item) stale; refreshing", category: .debug)
             scheduleDeferredBookmarkUpdate(for: item, bookmark: refreshed)
         }
         return result.url
@@ -127,7 +127,7 @@ final class ShelfStateViewModel: ObservableObject {
         let bookmark = Bookmark(data: bookmarkData)
         let result = bookmark.resolve()
         if let refreshed = result.refreshedData, refreshed != bookmarkData {
-            NSLog("Bookmark for \(item) stale; refreshing")
+            Logger.log("Bookmark for \(item) stale; refreshing", category: .debug)
             updateBookmark(for: item, bookmark: refreshed)
         }
         return result.url
