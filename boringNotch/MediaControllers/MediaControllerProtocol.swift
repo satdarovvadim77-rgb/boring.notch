@@ -15,6 +15,7 @@ protocol MediaControllerProtocol: ObservableObject {
     var supportsFavorite: Bool { get }
     
     func setFavorite(_ favorite: Bool) async
+    func dislike() async
     func play() async
     func pause() async
     func seek(to time: Double) async
@@ -26,4 +27,8 @@ protocol MediaControllerProtocol: ObservableObject {
     func setVolume(_ level: Double) async
     func isActive() -> Bool
     func updatePlaybackInfo() async
+}
+
+extension MediaControllerProtocol {
+    func dislike() async {}
 }

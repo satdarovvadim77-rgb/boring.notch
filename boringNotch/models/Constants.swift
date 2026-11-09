@@ -25,6 +25,13 @@ struct CustomVisualizer: Codable, Hashable, Equatable, Defaults.Serializable {
     var speed: CGFloat = 1.0
 }
 
+struct CustomAppIconItem: Codable, Hashable, Identifiable, Defaults.Serializable {
+    var id: String
+    var name: String
+    var fileName: String
+    var dateAdded: Date
+}
+
 enum CalendarSelectionState: Codable, Defaults.Serializable {
     case all
     case selected(Set<String>)
@@ -44,7 +51,7 @@ extension Notification.Name {
 // Media controller types for selection in settings
 enum MediaControllerType: String, CaseIterable, Identifiable, Defaults.Serializable {
     case nowPlaying = "Now Playing"
-    case appleMusic = "Apple Music"
+    case yandexMusic = "Yandex Music"
     case spotify = "Spotify"
     case youtubeMusic = "YouTube Music"
     
@@ -66,6 +73,95 @@ enum OptionKeyAction: String, CaseIterable, Identifiable, Defaults.Serializable 
     case none = "No Action"
 
     var id: String { self.rawValue }
+}
+
+// Font style options for Date & Time display
+enum DateTimeFontStyle: String, CaseIterable, Identifiable, Defaults.Serializable {
+    case rounded = "Rounded"
+    case system = "System"
+    case monospaced = "Digital / Monospaced"
+    case serif = "Serif"
+    case heavy = "Heavy Display"
+    case compact = "Compact"
+
+    var id: String { rawValue }
+}
+
+// Layout / shape options for Date & Time display
+enum DateTimeLayoutStyle: String, CaseIterable, Identifiable, Defaults.Serializable {
+    case stacked = "Stacked (Large Clock)"
+    case horizontal = "Horizontal (One Line)"
+    case capsule = "Capsule Badge"
+    case digitalWidget = "Digital Card"
+    case minimalist = "Minimalist"
+
+    var id: String { rawValue }
+}
+
+// Background fill options for the entire Notch
+enum NotchBackgroundStyle: String, CaseIterable, Identifiable, Defaults.Serializable {
+    case glass = "Liquid Glass"
+    case solidDark = "Dark Surface"
+    case gradientGlow = "Gradient Glow"
+    case accent = "Accent Tint"
+    case transparent = "Ultra Transparent"
+
+    var id: String { rawValue }
+}
+
+// Color fill options for Date & Time clock display
+enum DateTimeColorStyle: String, CaseIterable, Identifiable, Defaults.Serializable {
+    // Custom Solid Palette
+    case palette = "Custom Color Palette"
+
+    // Two-Tone / Multi-Color Gradients (Apple Style)
+    case sunsetGlow = "Sunset Glow"
+    case oceanBreeze = "Ocean Breeze"
+    case lavenderDusk = "Lavender Dusk"
+    case neonCyber = "Neon Cyber"
+    case crimsonFire = "Crimson Fire"
+    case aurora = "Cosmic Aurora"
+
+    // Solid Presets
+    case white = "Classic White"
+    case accent = "System Accent"
+    case cyan = "Neon Cyan"
+    case orange = "Sunset Orange"
+    case purple = "Electric Purple"
+    case green = "Emerald Green"
+    case gold = "Golden Amber"
+    case rose = "Pastel Rose"
+
+    var id: String { rawValue }
+}
+
+// Font weight (thickness) options for Date & Time clock display
+enum DateTimeFontWeight: String, CaseIterable, Identifiable, Defaults.Serializable {
+    case ultraLight = "Ultra Light"
+    case thin = "Thin"
+    case light = "Light"
+    case regular = "Regular"
+    case medium = "Medium"
+    case semibold = "Semibold"
+    case bold = "Bold"
+    case heavy = "Heavy"
+    case black = "Black"
+
+    var id: String { rawValue }
+
+    var fontWeight: Font.Weight {
+        switch self {
+        case .ultraLight: return .ultraLight
+        case .thin: return .thin
+        case .light: return .light
+        case .regular: return .regular
+        case .medium: return .medium
+        case .semibold: return .semibold
+        case .bold: return .bold
+        case .heavy: return .heavy
+        case .black: return .black
+        }
+    }
 }
 
 extension Defaults.Keys {
@@ -90,6 +186,16 @@ extension Defaults.Keys {
     )
     static let nonNotchHeight = Key<CGFloat>("nonNotchHeight", default: 32)
     static let notchHeight = Key<CGFloat>("notchHeight", default: 32)
+    static let openNotchWidth = Key<CGFloat>("openNotchWidth", default: 640)
+    static let nonNotchWidth = Key<CGFloat>("nonNotchWidth", default: 185)
+
+    // MARK: Game Mode
+    static let disableHoverInGameMode = Key<Bool>("disableHoverInGameMode", default: true)
+    static let minimizeActivityInGameMode = Key<Bool>("minimizeActivityInGameMode", default: true)
+
+    // MARK: Energy & Performance
+    static let energySaverMode = Key<Bool>("energySaverMode", default: false)
+    static let reduceLoadOnBattery = Key<Bool>("reduceLoadOnBattery", default: true)
     //static let openLastTabByDefault = Key<Bool>("openLastTabByDefault", default: false)
     static let showOnLockScreen = Key<Bool>("showOnLockScreen", default: false)
     static let hideFromScreenRecording = Key<Bool>("hideFromScreenRecording", default: false)
@@ -103,6 +209,28 @@ extension Defaults.Keys {
     static let lightingEffect = Key<Bool>("lightingEffect", default: true)
     static let enableShadow = Key<Bool>("enableShadow", default: true)
     static let cornerRadiusScaling = Key<Bool>("cornerRadiusScaling", default: true)
+    static let notchBackgroundStyle = Key<NotchBackgroundStyle>("notchBackgroundStyle", default: .glass)
+    static let liquidGlassOpacity = Key<Double>("liquidGlassOpacity", default: 0.0)
+    static let notchCornerRadius = Key<CGFloat>("notchCornerRadius", default: 24.0)
+    static let continuousCorners = Key<Bool>("continuousCorners", default: true)
+
+    // MARK: Date & Time Display
+    static let showDateTimeWhenIdle = Key<Bool>("showDateTimeWhenIdle", default: true)
+    static let idleClockTimeout = Key<Double>("idleClockTimeout", default: 60.0)
+    static let dateTimeFontStyle = Key<DateTimeFontStyle>("dateTimeFontStyle", default: .rounded)
+    static let dateTimeFontWeight = Key<DateTimeFontWeight>("dateTimeFontWeight", default: .bold)
+    static let dateTimeLayoutStyle = Key<DateTimeLayoutStyle>("dateTimeLayoutStyle", default: .stacked)
+    static let dateTimeColorStyle = Key<DateTimeColorStyle>("dateTimeColorStyle", default: .sunsetGlow)
+    static let dateTimeCustomColorHex = Key<String>("dateTimeCustomColorHex", default: "#00E5FF")
+    static let dateTimeClockScale = Key<Double>("dateTimeClockScale", default: 1.0)
+    static let dateTimeTextOpacity = Key<Double>("dateTimeTextOpacity", default: 1.0)
+    static let dateTimeShowSeconds = Key<Bool>("dateTimeShowSeconds", default: false)
+    static let dateTime24Hour = Key<Bool>("dateTime24Hour", default: true)
+    static let dateTimeShowDayOfWeek = Key<Bool>("dateTimeShowDayOfWeek", default: true)
+
+    // MARK: App Icons
+    static let selectedAppIconID = Key<String>("selectedAppIconID", default: "default")
+    static let customAppIcons = Key<[CustomAppIconItem]>("customAppIcons", default: [])
 
     static let showNotHumanFace = Key<Bool>("showNotHumanFace", default: false)
     static let tileShowLabels = Key<Bool>("tileShowLabels", default: false)
@@ -151,14 +279,11 @@ extension Defaults.Keys {
     static let selectedDownloadIconStyle = Key<DownloadIconStyle>("selectedDownloadIconStyle", default: DownloadIconStyle.onlyAppIcon)
     
     // MARK: HUD
-    static let hudReplacement = Key<Bool>("hudReplacement", default: false)
+    static let hudReplacement = Key<Bool>("hudReplacement", default: true)
     static let inlineHUD = Key<Bool>("inlineHUD", default: false)
     static let enableGradient = Key<Bool>("enableGradient", default: false)
     static let systemEventIndicatorShadow = Key<Bool>("systemEventIndicatorShadow", default: false)
     static let systemEventIndicatorUseAccent = Key<Bool>("systemEventIndicatorUseAccent", default: false)
-    static let showOpenNotchHUD = Key<Bool>("showOpenNotchHUD", default: true)
-    static let showOpenNotchHUDPercentage = Key<Bool>("showOpenNotchHUDPercentage", default: true)
-    static let showClosedNotchHUDPercentage = Key<Bool>("showClosedNotchHUDPercentage", default: false)
     // Option key modifier behaviour for media keys
     static let optionKeyAction = Key<OptionKeyAction>("optionKeyAction", default: OptionKeyAction.openSettings)
     
@@ -192,9 +317,9 @@ extension Defaults.Keys {
     // Helper to determine the default media controller based on NowPlaying deprecation status
     static var defaultMediaController: MediaControllerType {
         if MusicManager.shared.isNowPlayingDeprecated {
-            return .appleMusic
+            return .yandexMusic
         } else {
-            return .nowPlaying
+            return .yandexMusic
         }
     }
 

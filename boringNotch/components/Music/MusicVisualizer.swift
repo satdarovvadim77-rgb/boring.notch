@@ -56,7 +56,8 @@ class AudioSpectrum: NSView {
     
     private func startAnimating() {
         guard animationTimer == nil else { return }
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] _ in
+        let interval: TimeInterval = EnergySaverManager.shared.isEnergySaverActive ? 0.8 : 0.3
+        animationTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             self?.updateBars()
         }
     }
@@ -68,6 +69,10 @@ class AudioSpectrum: NSView {
     }
     
     private func updateBars() {
+        let isEnergySaver = EnergySaverManager.shared.isEnergySaverActive
+        let duration: TimeInterval = isEnergySaver ? 0.8 : 0.3
+        let fps: Float = isEnergySaver ? 15 : 24
+
         for (i, barLayer) in barLayers.enumerated() {
             let currentScale = barScales[i]
             let targetScale = CGFloat.random(in: 0.35 ... 1.0)
@@ -75,12 +80,12 @@ class AudioSpectrum: NSView {
             let animation = CABasicAnimation(keyPath: "transform.scale.y")
             animation.fromValue = currentScale
             animation.toValue = targetScale
-            animation.duration = 0.3
+            animation.duration = duration
             animation.autoreverses = true
             animation.fillMode = .forwards
             animation.isRemovedOnCompletion = false
             if #available(macOS 13.0, *) {
-                animation.preferredFrameRateRange = CAFrameRateRange(minimum: 24, maximum: 24, preferred: 24)
+                animation.preferredFrameRateRange = CAFrameRateRange(minimum: fps, maximum: fps, preferred: fps)
             }
             barLayer.add(animation, forKey: "scaleY")
         }
@@ -92,6 +97,19 @@ class AudioSpectrum: NSView {
             barLayer.transform = CATransform3DMakeScale(1, 0.35, 1)
             barScales[i] = 0.35
         }
+    }
+    
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window == nil {
+            stopAnimating()
+        } else if isPlaying {
+            startAnimating()
+        }
+    }
+    
+    deinit {
+        stopAnimating()
     }
     
     func setPlaying(_ playing: Bool) {

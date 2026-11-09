@@ -37,25 +37,93 @@ struct ContentView: View {
 
     @Default(.showNotHumanFace) var showNotHumanFace
 
+    @Default(.notchCornerRadius) var customCornerRadius
+    @Default(.notchBackgroundStyle) var notchBackgroundStyle
+    @Default(.liquidGlassOpacity) var liquidGlassOpacity
+    @Default(.continuousCorners) var continuousCorners
+
     // Shared interactive spring for movement/resizing to avoid conflicting animations
     private let animationSpring = Animation.interactiveSpring(response: 0.38, dampingFraction: 0.8, blendDuration: 0)
 
     private let extendedHoverPadding: CGFloat = 30
     private let zeroHeightHoverPadding: CGFloat = 10
 
+    private var hasPhysicalNotch: Bool {
+        (NSScreen.screen(withUUID: coordinator.selectedScreenUUID)?.safeAreaInsets.top ?? 0) > 0
+    }
+
     private var topCornerRadius: CGFloat {
-       ((vm.notchState == .open) && Defaults[.cornerRadiusScaling])
-                ? cornerRadiusInsets.opened.top
+        if vm.notchState == .open {
+            return Defaults[.cornerRadiusScaling]
+                ? (customCornerRadius * (19.0 / 24.0))
                 : cornerRadiusInsets.closed.top
+        } else {
+            return cornerRadiusInsets.closed.top
+        }
+    }
+
+    private var bottomCornerRadius: CGFloat {
+        if vm.notchState == .open {
+            return Defaults[.cornerRadiusScaling]
+                ? customCornerRadius
+                : cornerRadiusInsets.closed.bottom
+        } else {
+            return cornerRadiusInsets.closed.bottom
+        }
     }
 
     private var currentNotchShape: NotchShape {
         NotchShape(
             topCornerRadius: topCornerRadius,
-            bottomCornerRadius: ((vm.notchState == .open) && Defaults[.cornerRadiusScaling])
-                ? cornerRadiusInsets.opened.bottom
-                : cornerRadiusInsets.closed.bottom
+            bottomCornerRadius: bottomCornerRadius,
+            isContinuous: continuousCorners
         )
+    }
+
+    @ViewBuilder
+    private var notchBackground: some View {
+        let glassOpacity = liquidGlassOpacity
+        if vm.notchState == .closed && hasPhysicalNotch {
+            // Keep pure pitch black under physical MacBook notch when closed
+            Color.black
+        } else if vm.notchState == .open {
+            switch notchBackgroundStyle {
+            case .glass:
+                if glassOpacity > 0 {
+                    ZStack {
+                        VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+                        Color.black.opacity(1.0 - (glassOpacity * 0.72))
+                    }
+                } else {
+                    Color.black
+                }
+            case .solidDark:
+                Color.black.opacity(max(0.25, 1.0 - (glassOpacity * 0.65)))
+            case .gradientGlow:
+                ZStack {
+                    VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+                    LinearGradient(
+                        colors: [
+                            Color.effectiveAccent.opacity(0.35 * max(0.3, glassOpacity)),
+                            Color.black.opacity(1.0 - (glassOpacity * 0.5)),
+                            Color.black.opacity(0.9)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                }
+            case .accent:
+                ZStack {
+                    VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+                    Color.effectiveAccent.opacity(0.25 * max(0.2, glassOpacity))
+                        .background(Color.black.opacity(1.0 - (glassOpacity * 0.5)))
+                }
+            case .transparent:
+                Color.black.opacity(max(0.08, 0.45 * (1.0 - glassOpacity)))
+            }
+        } else {
+            Color.black
+        }
     }
 
     private var computedChinWidth: CGFloat {
@@ -64,7 +132,7 @@ struct ContentView: View {
         if coordinator.expandingView.type == .battery && coordinator.expandingView.show
             && vm.notchState == .closed && Defaults[.showPowerStatusNotifications]
         {
-            chinWidth = 640
+            chinWidth = openNotchWidth
         } else if (!coordinator.expandingView.show || coordinator.expandingView.type == .music)
             && vm.notchState == .closed && (musicManager.isPlaying || !musicManager.isPlayerIdle)
             && coordinator.musicLiveActivityEnabled && !vm.hideOnClosed
@@ -100,11 +168,33 @@ struct ContentView: View {
                         : cornerRadiusInsets.closed.bottom
                     )
                     .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
-                    .background(.black)
+                    .background(notchBackground)
                     .clipShape(currentNotchShape)
+                    .overlay {
+                        let shouldShowStroke = (notchBackgroundStyle == .glass || notchBackgroundStyle == .gradientGlow || liquidGlassOpacity > 0) && vm.notchState == .open
+                        if shouldShowStroke {
+                            let strokeOpacity = max(0.2, liquidGlassOpacity)
+                            currentNotchShape
+                                .stroke(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: Color.white.opacity(0.38 * strokeOpacity), location: 0.0),
+                                            .init(color: Color.white.opacity(0.12 * strokeOpacity), location: 0.18),
+                                            .init(color: Color.white.opacity(0.04 * strokeOpacity), location: 0.70),
+                                            .init(color: Color.white.opacity(0.16 * strokeOpacity), location: 1.0)
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 1
+                                )
+                                .allowsHitTesting(false)
+                        }
+                    }
                     .overlay(alignment: .top) {
+                        let isNonBlack = (liquidGlassOpacity > 0 || notchBackgroundStyle != .solidDark) && vm.notchState == .open
                         Rectangle()
-                            .fill(.black)
+                            .fill(isNonBlack ? Color.clear : Color.black)
                             .frame(height: 1)
                             .padding(.horizontal, topCornerRadius)
                     }
@@ -145,6 +235,18 @@ struct ContentView: View {
                             .panGesture(direction: .up) { translation, phase in
                                 handleUpGesture(translation: translation, phase: phase)
                             }
+                    }
+                    .onAppear {
+                        Task {
+                            try? await Task.sleep(for: .seconds(1))
+                            await MainActor.run {
+                                if coordinator.firstLaunch {
+                                    withAnimation(vm.animation) {
+                                        doOpen()
+                                    }
+                                }
+                            }
+                        }
                     }
                     .onReceive(NotificationCenter.default.publisher(for: .sharingDidFinish)) { _ in
                         if vm.notchState == .open && !isHovering && !vm.isBatteryPopoverActive {
@@ -210,7 +312,6 @@ struct ContentView: View {
         )
         .animation(.smooth, value: gestureProgress)
         .background(dragDetector)
-        .preferredColorScheme(.dark)
         .environmentObject(vm)
         .onChange(of: vm.anyDropZoneTargeting) { _, isTargeted in
             anyDropDebounceTask?.cancel()
@@ -244,14 +345,14 @@ struct ContentView: View {
     func NotchLayout() -> some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                if coordinator.helloAnimationRunning {
+                if coordinator.firstLaunch {
                     Spacer()
-                    HelloAnimation(onFinish: {
-                        vm.closeHello()
-                    }).frame(
+                    HelloAnimation().frame(
                         width: getClosedNotchSize().width,
                         height: 80
-                    )
+                    ).onAppear(perform: {
+                        vm.closeHello()
+                    })
                     .padding(.top, 40)
                     Spacer()
                 } else {
@@ -501,6 +602,9 @@ struct ContentView: View {
     }
 
     private func doOpen() {
+        if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
+            return
+        }
         withAnimation(animationSpring) {
             vm.open()
         }
@@ -509,9 +613,15 @@ struct ContentView: View {
     // MARK: - Hover Management
 
     private func handleHover(_ hovering: Bool) {
-        if coordinator.firstLaunch { return }
         hoverTask?.cancel()
         
+        if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
+            if isHovering {
+                isHovering = false
+            }
+            return
+        }
+
         if hovering {
             withAnimation(animationSpring) {
                 isHovering = true
@@ -558,6 +668,9 @@ struct ContentView: View {
     // MARK: - Gesture Handling
 
     private func handleDownGesture(translation: CGFloat, phase: NSEvent.Phase) {
+        if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
+            return
+        }
         guard vm.notchState == .closed else { return }
 
         if phase == .ended {

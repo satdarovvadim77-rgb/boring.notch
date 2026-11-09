@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Defaults
 
 struct InlineHUD: View {
     @EnvironmentObject var vm: BoringViewModel
@@ -87,14 +86,6 @@ struct InlineHUD: View {
                         })
                         if (type == .volume && value.isZero) {
                             Text("muted")
-                                .font(.caption)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.gray)
-                                .lineLimit(1)
-                                .allowsTightening(true)
-                                .multilineTextAlignment(.trailing)
-                        } else if Defaults[.showClosedNotchHUDPercentage] {
-                            Text("\(Int(value * 100))%")
                                 .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundStyle(.gray)

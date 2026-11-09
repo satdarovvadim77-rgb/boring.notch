@@ -46,13 +46,21 @@ class MusicManager: ObservableObject {
     @Published var repeatMode: RepeatMode = .off
     @Published var volume: Double = 0.5
     @Published var volumeControlSupported: Bool = true
+    @Published var isMuted: Bool = false
+    private var lastNonZeroVolume: Double = 0.5
     @ObservedObject var coordinator = BoringViewCoordinator.shared
     @Published var usingAppIconForArtwork: Bool = false
     @Published var currentLyrics: String = ""
     @Published var isFetchingLyrics: Bool = false
     @Published var syncedLyrics: [(time: Double, text: String)] = []
-    @Published var canFavoriteTrack: Bool = false
+    @Published var canFavoriteTrack: Bool = true
     @Published var isFavoriteTrack: Bool = false
+    @Published var canDislikeTrack: Bool = true
+    @Published var isDislikedTrack: Bool = false
+    @Published var lastActivePlaybackDate: Date = Date.distantPast
+    @Published var isTrackTransitioning: Bool = false
+    private var trackTransitionTask: Task<Void, Never>?
+    private var idleClockTimerTask: Task<Void, Never>?
 
     private var artworkData: Data? = nil
 
@@ -125,8 +133,8 @@ class MusicManager: ObservableObject {
             } else {
                 return nil
             }
-        case .appleMusic:
-            newController = AppleMusicController()
+        case .yandexMusic:
+            newController = YandexMusicController()
         case .spotify:
             newController = SpotifyController()
         case .youtubeMusic:
@@ -152,15 +160,15 @@ class MusicManager: ObservableObject {
         let preferredType = Defaults[.mediaController]
         print("Preferred Media Controller: \(preferredType)")
 
-        // If NowPlaying is deprecated but that's the preference, use Apple Music instead
+        // If NowPlaying is deprecated but that's the preference, use Yandex Music instead
         let controllerType = (self.isNowPlayingDeprecated && preferredType == .nowPlaying)
-            ? .appleMusic
+            ? .yandexMusic
             : preferredType
 
         if let controller = createController(for: controllerType) {
             setActiveController(controller)
-        } else if controllerType != .appleMusic, let fallbackController = createController(for: .appleMusic) {
-            // Fallback to Apple Music if preferred controller couldn't be created
+        } else if controllerType != .yandexMusic, let fallbackController = createController(for: .yandexMusic) {
+            // Fallback to Yandex Music if preferred controller couldn't be created
             setActiveController(fallbackController)
         }
     }
@@ -173,6 +181,7 @@ class MusicManager: ObservableObject {
         activeController = controller
         
         self.canFavoriteTrack = controller.supportsFavorite
+        self.canDislikeTrack = true
 
         // Get current state from active controller
         forceUpdate()
@@ -189,9 +198,22 @@ class MusicManager: ObservableObject {
                 self.updateIdleState(state: state.isPlaying)
             }
 
-            if state.isPlaying && !state.title.isEmpty && !state.artist.isEmpty {
-                self.updateSneakPeek()
+            if state.isPlaying {
+                self.lastActivePlaybackDate = Date()
+                self.isTrackTransitioning = false
+                self.trackTransitionTask?.cancel()
+                self.idleClockTimerTask?.cancel()
+                if !state.title.isEmpty && !state.artist.isEmpty {
+                    self.updateSneakPeek()
+                }
+            } else {
+                // Playback paused or transitioning between tracks
+                self.lastActivePlaybackDate = Date()
+                self.startTrackTransition(duration: 2.5)
+                self.scheduleIdleClockTimer()
             }
+        } else if state.isPlaying {
+            self.lastActivePlaybackDate = Date()
         }
 
         // Check for changes in track metadata using last artwork change values
@@ -243,15 +265,20 @@ class MusicManager: ObservableObject {
         let repeatModeChanged = state.repeatMode != self.repeatMode
         let volumeChanged = state.volume != self.volume
         
-        if state.title != self.songTitle {
+        let newTitle = state.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        if state.title != self.songTitle && !newTitle.isEmpty {
             self.songTitle = state.title
+            self.isTrackTransitioning = false
+            self.trackTransitionTask?.cancel()
         }
 
-        if state.artist != self.artistName {
+        let newArtist = state.artist.trimmingCharacters(in: .whitespacesAndNewlines)
+        if state.artist != self.artistName && !newArtist.isEmpty {
             self.artistName = state.artist
         }
 
-        if state.album != self.album {
+        let newAlbum = state.album.trimmingCharacters(in: .whitespacesAndNewlines)
+        if state.album != self.album && !newAlbum.isEmpty {
             self.album = state.album
         }
 
@@ -275,6 +302,13 @@ class MusicManager: ObservableObject {
             self.bundleIdentifier = state.bundleIdentifier
             // Update volume control support from active controller
             self.volumeControlSupported = activeController?.supportsVolumeControl ?? false
+            self.canFavoriteTrack = isYandexMusicTarget || (activeController?.supportsFavorite ?? true)
+            self.canDislikeTrack = true
+        }
+
+        if isYandexMusicTarget {
+            self.canFavoriteTrack = true
+            self.canDislikeTrack = true
         }
 
         if repeatModeChanged {
@@ -286,42 +320,39 @@ class MusicManager: ObservableObject {
         
         if volumeChanged {
             self.volume = state.volume
+            if state.volume > 0.01 {
+                self.lastNonZeroVolume = state.volume
+                self.isMuted = false
+            } else if state.volume <= 0.001 {
+                self.isMuted = true
+            }
         }
         
         self.timestampDate = state.lastUpdated
+    }
+
+    private var isYandexMusicTarget: Bool {
+        if let bundle = bundleIdentifier?.lowercased(), bundle.contains("yandex") {
+            return true
+        }
+        if activeController is YandexMusicController {
+            return true
+        }
+        if let nowPlaying = activeController as? NowPlayingController,
+           nowPlaying.playbackState.bundleIdentifier.lowercased().contains("yandex") {
+            return true
+        }
+        let currentBundle = bundleIdentifier?.lowercased() ?? ""
+        if (currentBundle.isEmpty || currentBundle.contains("yandex")) && YandexMusicHelper.shared.isRunning {
+            return true
+        }
+        return false
     }
 
     func toggleFavoriteTrack() {
         guard canFavoriteTrack else { return }
         // Toggle based on current state
         setFavorite(!isFavoriteTrack)
-    }
-
-    @MainActor
-    private func toggleAppleMusicFavorite() async {
-        let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
-        guard !runningApps.isEmpty else { return }
-
-        let script = """
-        tell application \"Music\"
-            if it is running then
-                try
-                    set loved of current track to (not loved of current track)
-                    return loved of current track
-                on error
-                    return false
-                end try
-            else
-                return false
-            end if
-        end tell
-        """
-
-        if let result = try? await AppleScriptHelper.execute(script) {
-            let loved = result.booleanValue
-            self.isFavoriteTrack = loved
-            self.forceUpdate()
-        }
     }
 
     func setFavorite(_ favorite: Bool) {
@@ -335,14 +366,24 @@ class MusicManager: ObservableObject {
         }
     }
 
-    /// Placeholder dislike function
+    /// Dislike current track
     func dislikeCurrentTrack() {
-        setFavorite(false)
+        isDislikedTrack.toggle()
+        if isDislikedTrack {
+            isFavoriteTrack = false
+        }
+        if let controller = activeController {
+            Task { @MainActor in
+                await controller.dislike()
+                try? await Task.sleep(for: .milliseconds(150))
+                await controller.updatePlaybackInfo()
+            }
+        }
     }
 
     // MARK: - Lyrics
     private func fetchLyricsIfAvailable(bundleIdentifier: String?, title: String, artist: String) {
-        guard Defaults[.enableLyrics], !title.isEmpty else {
+        guard Defaults[.enableLyrics], !title.isEmpty, !EnergySaverManager.shared.isEnergySaverActive else {
             DispatchQueue.main.async {
                 self.isFetchingLyrics = false
                 self.currentLyrics = ""
@@ -353,12 +394,6 @@ class MusicManager: ObservableObject {
         // Prefer native Apple Music lyrics when available
         if let bundleIdentifier = bundleIdentifier, bundleIdentifier.contains("com.apple.Music") {
             Task { @MainActor in
-                let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
-                guard !runningApps.isEmpty else {
-                    await self.fetchLyricsFromWeb(title: title, artist: artist)
-                    return
-                }
-
                 self.isFetchingLyrics = true
                 self.currentLyrics = ""
                 do {
@@ -551,6 +586,28 @@ class MusicManager: ObservableObject {
         }
     }
 
+    func startTrackTransition(duration: TimeInterval = 3.0) {
+        lastActivePlaybackDate = Date()
+        isTrackTransitioning = true
+        trackTransitionTask?.cancel()
+        trackTransitionTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(duration))
+            self?.isTrackTransitioning = false
+        }
+    }
+
+    private func scheduleIdleClockTimer() {
+        idleClockTimerTask?.cancel()
+        let timeout = Defaults[.idleClockTimeout]
+        guard timeout > 0 else { return }
+
+        idleClockTimerTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(timeout))
+            guard let self = self, !self.isPlaying else { return }
+            self.objectWillChange.send()
+        }
+    }
+
     private var workItem: DispatchWorkItem?
 
     func updateAlbumArt(newAlbumArt: NSImage) {
@@ -573,6 +630,10 @@ class MusicManager: ObservableObject {
     }
 
     func calculateAverageColor() {
+        if EnergySaverManager.shared.isEnergySaverActive {
+            self.avgColor = .white
+            return
+        }
         albumArt.averageColor { [weak self] color in
             DispatchQueue.main.async {
                 withAnimation(.smooth) {
@@ -594,9 +655,7 @@ class MusicManager: ObservableObject {
 
     // MARK: - Public Methods for controlling playback
     func playPause() {
-        Task {
-            await activeController?.togglePlay()
-        }
+        togglePlay()
     }
 
     func play() {
@@ -630,12 +689,14 @@ class MusicManager: ObservableObject {
     }
 
     func nextTrack() {
+        startTrackTransition()
         Task {
             await activeController?.nextTrack()
         }
     }
 
     func previousTrack() {
+        startTrackTransition()
         Task {
             await activeController?.previousTrack()
         }
@@ -646,36 +707,77 @@ class MusicManager: ObservableObject {
             await activeController?.seek(to: position)
         }
     }
+
     func skip(seconds: TimeInterval) {
         let newPos = min(max(0, elapsedTime + seconds), songDuration)
         seek(to: newPos)
     }
+
+    func toggleMute() {
+        if volumeControlSupported {
+            if isMuted || volume <= 0.01 {
+                let restore = lastNonZeroVolume > 0.05 ? lastNonZeroVolume : 0.5
+                setVolume(to: restore)
+            } else {
+                if volume > 0.01 {
+                    lastNonZeroVolume = volume
+                }
+                setVolume(to: 0)
+            }
+        } else {
+            Task { @MainActor in
+                VolumeManager.shared.toggleMuteAction()
+                self.isMuted = VolumeManager.shared.isMuted
+            }
+        }
+    }
     
     func setVolume(to level: Double) {
+        let clamped = max(0.0, min(1.0, level))
+        if clamped > 0.01 {
+            lastNonZeroVolume = clamped
+            isMuted = false
+        } else {
+            isMuted = true
+        }
+        self.volume = clamped
         if let controller = activeController {
             Task {
-                await controller.setVolume(level)
+                await controller.setVolume(clamped)
             }
         }
     }
     func openMusicApp() {
-        guard let bundleID = bundleIdentifier else {
-            print("Error: appBundleIdentifier is nil")
+        let targetBundleID = (bundleIdentifier != nil && !bundleIdentifier!.isEmpty)
+            ? bundleIdentifier!
+            : YandexMusicHelper.bundleIdentifier
+
+        if targetBundleID == YandexMusicHelper.bundleIdentifier {
+            YandexMusicHelper.shared.openAndActivateApp()
             return
         }
 
         let workspace = NSWorkspace.shared
-        if let appURL = workspace.urlForApplication(withBundleIdentifier: bundleID) {
+        if let appURL = workspace.urlForApplication(withBundleIdentifier: targetBundleID) {
             let configuration = NSWorkspace.OpenConfiguration()
+            configuration.activates = true
+            configuration.createsNewApplicationInstance = false
+            configuration.allowsRunningApplicationSubstitution = true
             workspace.openApplication(at: appURL, configuration: configuration) { (app, error) in
+                DispatchQueue.main.async {
+                    if let runningApp = app ?? NSRunningApplication.runningApplications(withBundleIdentifier: targetBundleID).first {
+                        runningApp.activate(options: [.activateIgnoringOtherApps, .activateAllWindows])
+                    }
+                }
                 if let error = error {
-                    print("Failed to launch app with bundle ID: \(bundleID), error: \(error)")
+                    print("Failed to launch app with bundle ID: \(targetBundleID), error: \(error)")
                 } else {
-                    print("Launched app with bundle ID: \(bundleID)")
+                    print("Launched app with bundle ID: \(targetBundleID)")
                 }
             }
         } else {
-            print("Failed to find app with bundle ID: \(bundleID)")
+            // Fallback to Yandex Music app directly
+            YandexMusicHelper.shared.openAndActivateApp()
         }
     }
 
@@ -688,37 +790,21 @@ class MusicManager: ObservableObject {
                 } else {
                     await self?.activeController?.updatePlaybackInfo()
                 }
+                // Sync volume after update
+                await self?.syncVolumeFromActiveApp()
             }
         }
     }
     
     
     func syncVolumeFromActiveApp() async {
-        // Check if bundle identifier is valid and if the app is actually running
-        guard let bundleID = bundleIdentifier, !bundleID.isEmpty,
-              NSWorkspace.shared.runningApplications.contains(where: { $0.bundleIdentifier == bundleID }) else { return }
+        guard let bundleID = bundleIdentifier, !bundleID.isEmpty else { return }
         
         var script: String?
         if bundleID == "com.apple.Music" {
-            script = """
-            tell application "Music"
-                if it is running then
-                    get sound volume
-                else
-                    return 50
-                end if
-            end tell
-            """
+            script = "tell application \"Music\" to get sound volume"
         } else if bundleID == "com.spotify.client" {
-            script = """
-            tell application "Spotify"
-                if it is running then
-                    get sound volume
-                else
-                    return 50
-                end if
-            end tell
-            """
+            script = "tell application \"Spotify\" to get sound volume"
         } else {
             // For unsupported apps, don't sync volume
             return
@@ -732,6 +818,12 @@ class MusicManager: ObservableObject {
             await MainActor.run {
                 if abs(currentVolume - self.volume) > 0.01 {
                     self.volume = currentVolume
+                    if currentVolume > 0.01 {
+                        self.lastNonZeroVolume = currentVolume
+                        self.isMuted = false
+                    } else if currentVolume <= 0.001 {
+                        self.isMuted = true
+                    }
                 }
             }
         }

@@ -10,13 +10,12 @@ import Combine
 import Foundation
 
 final class NowPlayingController: ObservableObject, MediaControllerProtocol {
-    func updatePlaybackInfo() async {
-        await fetchFavoriteStateIfSupported()
-    }
+    // Stub for now to conform with ControllerProtocol
+    func updatePlaybackInfo() async {}
 
     // MARK: - Properties
     @Published private(set) var playbackState: PlaybackState = .init(
-        bundleIdentifier: "com.apple.Music"
+        bundleIdentifier: YandexMusicHelper.bundleIdentifier
     )
 
     var playbackStatePublisher: AnyPublisher<PlaybackState, Never> {
@@ -24,33 +23,59 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
     }
 
     var supportsVolumeControl: Bool {
-        let bundleID = playbackState.bundleIdentifier
-        return bundleID == "com.apple.Music" || bundleID == "com.spotify.client"
+        let bundleID = playbackState.bundleIdentifier.lowercased()
+        return bundleID == "com.apple.music" || bundleID == "com.spotify.client" || bundleID.contains("yandex") || YandexMusicHelper.shared.isRunning
     }
 
     var supportsFavorite: Bool {
-        let bundleID = playbackState.bundleIdentifier
-        return bundleID == "com.apple.Music"
+        let bundleID = playbackState.bundleIdentifier.lowercased()
+        return bundleID == "com.apple.music" || bundleID.contains("yandex") || YandexMusicHelper.shared.isRunning
     }
 
     func setFavorite(_ favorite: Bool) async {
-        let bundleID = playbackState.bundleIdentifier
+        let bundleID = playbackState.bundleIdentifier.lowercased()
         
-        if bundleID == "com.apple.Music" {
-            let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
-            if !runningApps.isEmpty {
-                let script = """
-                tell application "Music"
-                    try
-                        set favorited of current track to \(favorite ? "true" : "false")
-                    end try
-                end tell
-                """
-                try? await AppleScriptHelper.executeVoid(script)
-            }
+        if bundleID == "com.apple.music" {
+            let script = """
+            tell application "Music"
+                try
+                    set favorited of current track to \(favorite ? "true" : "false")
+                end try
+            end tell
+            """
+            try? await AppleScriptHelper.executeVoid(script)
+        } else {
+            // MediaRemote like command
+            MRMediaRemoteSendCommandFunction(15, nil)
+            MRMediaRemoteSendCommandFunction(128, nil)
         }
         
         // Update the favorite state locally and fetch updated info
+        playbackState.isFavorite = favorite
+        try? await Task.sleep(for: .milliseconds(150))
+        await updatePlaybackInfo()
+    }
+
+    func dislike() async {
+        let bundleID = playbackState.bundleIdentifier.lowercased()
+        
+        if bundleID == "com.apple.music" {
+            let script = """
+            tell application "Music"
+                try
+                    set disliked of current track to true
+                end try
+            end tell
+            """
+            try? await AppleScriptHelper.executeVoid(script)
+        } else {
+            // MediaRemote dislike command
+            MRMediaRemoteSendCommandFunction(14, nil)
+            MRMediaRemoteSendCommandFunction(16, nil)
+            MRMediaRemoteSendCommandFunction(129, nil)
+        }
+        
+        playbackState.isFavorite = false
         try? await Task.sleep(for: .milliseconds(150))
         await updatePlaybackInfo()
     }
@@ -148,13 +173,13 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
     }
     
     func toggleShuffle() async {
-        // MRMediaRemoteSendCommandFunction(6, nil)
+        MRMediaRemoteSendCommandFunction(6, nil)
         MRMediaRemoteSetShuffleModeFunction(playbackState.isShuffled ? 1 : 3)
         playbackState.isShuffled.toggle()
     }
     
     func toggleRepeat() async {
-        // MRMediaRemoteSendCommandFunction(7, nil)
+        MRMediaRemoteSendCommandFunction(7, nil)
         let newRepeatMode = (playbackState.repeatMode == .off) ? 3 : (playbackState.repeatMode.rawValue - 1)
         playbackState.repeatMode = RepeatMode(rawValue: newRepeatMode) ?? .off
         MRMediaRemoteSetRepeatModeFunction(newRepeatMode)
@@ -169,17 +194,11 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         let bundleID = playbackState.bundleIdentifier
         if !bundleID.isEmpty {
             if bundleID == "com.apple.Music" {
-                let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
-                if !runningApps.isEmpty {
-                    let script = "tell application \"Music\" to set sound volume to \(volumePercentage)"
-                    try? await AppleScriptHelper.executeVoid(script)
-                }
+                let script = "tell application \"Music\" to set sound volume to \(volumePercentage)"
+                try? await AppleScriptHelper.executeVoid(script)
             } else if bundleID == "com.spotify.client" {
-                let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client")
-                if !runningApps.isEmpty {
-                    let script = "tell application \"Spotify\" to set sound volume to \(volumePercentage)"
-                    try? await AppleScriptHelper.executeVoid(script)
-                }
+                let script = "tell application \"Spotify\" to set sound volume to \(volumePercentage)"
+                try? await AppleScriptHelper.executeVoid(script)
             }
         }
         
@@ -296,32 +315,29 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         self.playbackState = newPlaybackState
         
         // Fetch favorite state for supported apps asynchronously
-        // await fetchFavoriteStateIfSupported()
+        await fetchFavoriteStateIfSupported()
     }
     
-     private func fetchFavoriteStateIfSupported() async {
-         let bundleID = playbackState.bundleIdentifier
+    private func fetchFavoriteStateIfSupported() async {
+        let bundleID = playbackState.bundleIdentifier
         
-         if bundleID == "com.apple.Music" {
-             let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music")
-             guard !runningApps.isEmpty else { return }
-             
-             let script = """
-             tell application "Music"
-                 try
-                     return favorited of current track
-                 on error
-                     return false
-                 end try
-             end tell
-             """
-             if let result = try? await AppleScriptHelper.execute(script) {
-                 var updated = self.playbackState
-                 updated.isFavorite = result.booleanValue
-                 self.playbackState = updated
-             }
-         }
-     }
+        if bundleID == "com.apple.Music" {
+            let script = """
+            tell application "Music"
+                try
+                    return favorited of current track
+                on error
+                    return false
+                end try
+            end tell
+            """
+            if let result = try? await AppleScriptHelper.execute(script) {
+                var updated = self.playbackState
+                updated.isFavorite = result.booleanValue
+                self.playbackState = updated
+            }
+        }
+    }
     
 }
 

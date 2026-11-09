@@ -66,6 +66,21 @@ class BoringViewModel: NSObject, ObservableObject {
             .assign(to: \.anyDropZoneTargeting, on: self)
             .store(in: &cancellables)
         
+        NotificationCenter.default.publisher(for: Notification.Name.notchWidthChanged)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                if self.notchState == .open {
+                    withAnimation(self.animationLibrary.animation) {
+                        self.notchSize = openNotchSize
+                    }
+                } else {
+                    self.notchSize = getClosedNotchSize(screenUUID: self.screenUUID)
+                    self.closedNotchSize = self.notchSize
+                }
+            }
+            .store(in: &cancellables)
+        
         setupDetectorObserver()
     }
     
@@ -146,6 +161,7 @@ class BoringViewModel: NSObject, ObservableObject {
         case .denied, .restricted:
             DispatchQueue.main.async {
                 NSApp.setActivationPolicy(.regular)
+                AppIconManager.shared.restoreSavedAppIcon()
                 NSApp.activate(ignoringOtherApps: true)
 
                 let alert = NSAlert()
@@ -219,10 +235,10 @@ class BoringViewModel: NSObject, ObservableObject {
     }
 
     func closeHello() {
-        Task { @MainActor in
-            withAnimation(animationLibrary.animation) {
-                coordinator.helloAnimationRunning = false
-                close()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in
+            self?.coordinator.firstLaunch = false
+            withAnimation(self?.animationLibrary.animation) {
+                self?.close()
             }
         }
     }

@@ -147,6 +147,11 @@ struct GeneralSettings: View {
     @Default(.automaticallySwitchDisplay) var automaticallySwitchDisplay
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
+    @Default(.openNotchWidth) var openNotchWidth
+    @Default(.nonNotchWidth) var nonNotchWidth
+    @Default(.disableHoverInGameMode) var disableHoverInGameMode
+    @Default(.minimizeActivityInGameMode) var minimizeActivityInGameMode
+    @ObservedObject var gameModeManager = GameModeManager.shared
     
 
     var body: some View {
@@ -255,6 +260,52 @@ struct GeneralSettings: View {
                             name: Notification.Name.notchHeightChanged, object: nil)
                     }
                 }
+
+                HStack {
+                    Slider(value: $openNotchWidth, in: 480...900, step: 10) {
+                        HStack {
+                            Text("Open notch width")
+                            Spacer()
+                            Text("\(openNotchWidth, specifier: "%.0f") pt")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .onChange(of: openNotchWidth) {
+                        NotificationCenter.default.post(
+                            name: Notification.Name.notchWidthChanged, object: nil)
+                    }
+                    if openNotchWidth != 640 {
+                        Button("Reset") {
+                            openNotchWidth = 640
+                            NotificationCenter.default.post(
+                                name: Notification.Name.notchWidthChanged, object: nil)
+                        }
+                        .controlSize(.small)
+                    }
+                }
+
+                HStack {
+                    Slider(value: $nonNotchWidth, in: 120...320, step: 5) {
+                        HStack {
+                            Text("Closed width on non-notch displays")
+                            Spacer()
+                            Text("\(nonNotchWidth, specifier: "%.0f") pt")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .onChange(of: nonNotchWidth) {
+                        NotificationCenter.default.post(
+                            name: Notification.Name.notchWidthChanged, object: nil)
+                    }
+                    if nonNotchWidth != 185 {
+                        Button("Reset") {
+                            nonNotchWidth = 185
+                            NotificationCenter.default.post(
+                                name: Notification.Name.notchWidthChanged, object: nil)
+                        }
+                        .controlSize(.small)
+                    }
+                }
             } header: {
                 Text("Notch sizing")
             }
@@ -262,6 +313,8 @@ struct GeneralSettings: View {
             NotchBehaviour()
 
             gestureControls()
+
+            GameModeSection()
         }
         .toolbar {
             Button("Quit app") {
@@ -346,11 +399,57 @@ struct GeneralSettings: View {
             Text("Notch behavior")
         }
     }
+
+    @ViewBuilder
+    func GameModeSection() -> some View {
+        Section {
+            Defaults.Toggle(key: .disableHoverInGameMode) {
+                Text("Disable notch expansion on hover during games")
+            }
+            Defaults.Toggle(key: .minimizeActivityInGameMode) {
+                Text("Minimize background activity in Game Mode")
+            }
+        } header: {
+            HStack {
+                Text("Game Mode")
+                if gameModeManager.isGameModeActive {
+                    customBadge(text: "Active")
+                }
+            }
+        } footer: {
+            Text("When a full-screen game is running, boring.notch automatically prevents expanding on mouse hover and reduces background resource usage.")
+                .multilineTextAlignment(.leading)
+                .foregroundStyle(.secondary)
+                .font(.caption)
+        }
+    }
 }
 
 struct Charge: View {
+    @ObservedObject var energySaverManager = EnergySaverManager.shared
+
     var body: some View {
         Form {
+            Section {
+                Defaults.Toggle(key: .energySaverMode) {
+                    Text("Energy Saver Mode")
+                }
+                Defaults.Toggle(key: .reduceLoadOnBattery) {
+                    Text("Reduce load when on battery")
+                }
+            } header: {
+                HStack {
+                    Text("Energy & Performance")
+                    if energySaverManager.isEnergySaverActive {
+                        customBadge(text: "Active")
+                    }
+                }
+            } footer: {
+                Text("Reduces CPU and battery consumption by lowering animation frame rates, pausing non-essential timers, and suspending background network requests.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section {
                 Defaults.Toggle(key: .showBatteryIndicator) {
                     Text("Show battery indicator")
@@ -467,30 +566,23 @@ struct HUD: View {
     @Default(.inlineHUD) var inlineHUD
     @Default(.enableGradient) var enableGradient
     @Default(.optionKeyAction) var optionKeyAction
-    @Default(.hudReplacement) var hudReplacement
     @ObservedObject var coordinator = BoringViewCoordinator.shared
     @State private var accessibilityAuthorized = false
-    
     var body: some View {
         Form {
             Section {
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Replace system HUD")
-                            .font(.headline)
-                        Text("Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    Spacer(minLength: 40)
-                    Defaults.Toggle("", key: .hudReplacement)
-                    .labelsHidden()
-                    .toggleStyle(.switch)
-                    .controlSize(.large)
-                    .disabled(!accessibilityAuthorized)
+                Defaults.Toggle(key: .hudReplacement) {
+                   Text("Replace system HUD")
                 }
-                
+                .disabled(!accessibilityAuthorized)
+                .help("Enable Accessibility in System Settings → Privacy & Security → Accessibility")
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                    Task { @MainActor in
+                        let helper = await XPCHelperClient.shared.isAccessibilityAuthorized()
+                            accessibilityAuthorized = helper
+                        }
+                    }
+
                 if !accessibilityAuthorized {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Accessibility access is required to replace the system HUD.")
@@ -499,6 +591,7 @@ struct HUD: View {
 
                         HStack(spacing: 12) {
                             Button("Request Accessibility") {
+                                // Use unsandboxed XPC helper if available so the system prompt is shown
                                 XPCHelperClient.shared.requestAccessibilityAuthorization()
                             }
                             .buttonStyle(.borderedProminent)
@@ -506,48 +599,15 @@ struct HUD: View {
                     }
                     .padding(.top, 6)
                 }
-            }
-            
-            Section {
                 Picker("Option key behaviour", selection: $optionKeyAction) {
                     ForEach(OptionKeyAction.allCases) { opt in
                         Text(opt.rawValue).tag(opt)
                     }
                 }
-                
-                Picker("Progress bar style", selection: $enableGradient) {
-                    Text("Hierarchical")
-                        .tag(false)
-                    Text("Gradient")
-                        .tag(true)
-                }
-                Defaults.Toggle(key: .systemEventIndicatorShadow) {
-                    Text("Enable glowing effect")
-                }
-                Defaults.Toggle(key: .systemEventIndicatorUseAccent) {
-                    Text("Tint progress bar with accent color")
-                }
+                .pickerStyle(.radioGroup)
             } header: {
                 Text("General")
             }
-            .disabled(!hudReplacement)
-            
-            Section {
-                Defaults.Toggle(key: .showOpenNotchHUD) {
-                    Text("Show HUD in open notch")
-                }
-                Defaults.Toggle(key: .showOpenNotchHUDPercentage) {
-                    Text("Show percentage")
-                }
-                .disabled(!Defaults[.showOpenNotchHUD])
-            } header: {
-                HStack {
-                    Text("Open Notch")
-                    customBadge(text: "Beta")
-                }
-            }
-            .disabled(!hudReplacement)
-            
             Section {
                 Picker("HUD style", selection: $inlineHUD) {
                     Text("Default")
@@ -563,25 +623,28 @@ struct HUD: View {
                         }
                     }
                 }
-                
-                Defaults.Toggle(key: .showClosedNotchHUDPercentage) {
-                    Text("Show percentage")
+                Picker("Progressbar style", selection: $enableGradient) {
+                    Text("Hierarchical")
+                        .tag(false)
+                    Text("Gradient")
+                        .tag(true)
+                }
+                Defaults.Toggle(key: .systemEventIndicatorShadow) {
+                    Text("Enable glowing effect")
+                }
+                Defaults.Toggle(key: .systemEventIndicatorUseAccent) {
+                    Text("Tint progress bar with accent color")
                 }
             } header: {
-                Text("Closed Notch")
+                HStack {
+                    Text("Appearance")
+                }
             }
-            .disabled(!Defaults[.hudReplacement])
         }
         .accentColor(.effectiveAccent)
         .navigationTitle("HUDs")
         .task {
             accessibilityAuthorized = await XPCHelperClient.shared.isAccessibilityAuthorized()
-        }
-        .onAppear {
-            XPCHelperClient.shared.startMonitoringAccessibilityAuthorization()
-        }
-        .onDisappear {
-            XPCHelperClient.shared.stopMonitoringAccessibilityAuthorization()
         }
         .onReceive(NotificationCenter.default.publisher(for: .accessibilityAuthorizationChanged)) { notification in
             if let granted = notification.userInfo?["granted"] as? Bool {
@@ -865,14 +928,22 @@ struct About: View {
                     Text("Version info")
                 }
 
-                UpdaterSettingsView(updater: updaterController.updater)
-
                 HStack(spacing: 30) {
                     Spacer(minLength: 0)
                     Button {
-                        if let url = URL(string: "https://github.com/TheBoredTeam/boring.notch") {
-                            NSWorkspace.shared.open(url)
+                        NSWorkspace.shared.open(sponsorPage)
+                    } label: {
+                        VStack(spacing: 5) {
+                            Image(systemName: "cup.and.saucer.fill")
+                                .imageScale(.large)
+                            Text("Support Us")
+                                .foregroundStyle(.white)
                         }
+                        .contentShape(Rectangle())
+                    }
+                    Spacer(minLength: 0)
+                    Button {
+                        NSWorkspace.shared.open(productPage)
                     } label: {
                         VStack(spacing: 5) {
                             Image("Github")
@@ -880,6 +951,7 @@ struct About: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 18)
                             Text("GitHub")
+                                .foregroundStyle(.white)
                         }
                         .contentShape(Rectangle())
                     }
@@ -897,13 +969,6 @@ struct About: View {
                     .padding(.horizontal, 10)
             }
             .frame(maxWidth: .infinity, alignment: .center)
-        }
-        .toolbar {
-            //            Button("Welcome window") {
-            //                openWindow(id: "onboarding")
-            //            }
-            //            .controlSize(.extraLarge)
-            CheckForUpdatesView(updater: updaterController.updater)
         }
         .navigationTitle("About")
     }
@@ -1164,6 +1229,37 @@ struct Appearance: View {
     @Default(.useMusicVisualizer) var useMusicVisualizer
     @Default(.customVisualizers) var customVisualizers
     @Default(.selectedVisualizer) var selectedVisualizer
+    @Default(.notchBackgroundStyle) var notchBackgroundStyle
+    @Default(.liquidGlassOpacity) var liquidGlassOpacity
+    @Default(.notchCornerRadius) var notchCornerRadius
+    @Default(.showDateTimeWhenIdle) var showDateTimeWhenIdle
+    @Default(.idleClockTimeout) var idleClockTimeout
+    @Default(.dateTimeFontStyle) var dateTimeFontStyle
+    @Default(.dateTimeFontWeight) var dateTimeFontWeight
+    @Default(.dateTimeLayoutStyle) var dateTimeLayoutStyle
+    @Default(.dateTimeColorStyle) var dateTimeColorStyle
+    @Default(.dateTimeCustomColorHex) var dateTimeCustomColorHex
+    @Default(.dateTimeClockScale) var dateTimeClockScale
+    @Default(.dateTimeTextOpacity) var dateTimeTextOpacity
+    @Default(.dateTimeShowSeconds) var dateTimeShowSeconds
+    @Default(.dateTime24Hour) var dateTime24Hour
+    @Default(.dateTimeShowDayOfWeek) var dateTimeShowDayOfWeek
+
+    private var formattedTimeout: String {
+        if idleClockTimeout <= 0 {
+            return "Immediately on pause"
+        }
+        let totalSec = Int(idleClockTimeout)
+        let minutes = totalSec / 60
+        let seconds = totalSec % 60
+        if minutes == 0 {
+            return "\(seconds) sec"
+        } else if seconds == 0 {
+            return "\(minutes) min"
+        } else {
+            return "\(minutes) min \(seconds) sec"
+        }
+    }
 
     let icons: [String] = ["logo2"]
     @State private var selectedIcon: String = "logo2"
@@ -1174,6 +1270,135 @@ struct Appearance: View {
     @State private var speed: CGFloat = 1.0
     var body: some View {
         Form {
+            Section {
+                Picker("Notch background style", selection: $notchBackgroundStyle) {
+                    ForEach(NotchBackgroundStyle.allCases) { style in
+                        Text(style.rawValue).tag(style)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Liquid glass effect / Opacity")
+                        Spacer()
+                        Text("\(Int(liquidGlassOpacity * 100))%")
+                            .foregroundStyle(.secondary)
+                    }
+                    Slider(value: $liquidGlassOpacity, in: 0.0...1.0, step: 0.05)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Corner radius")
+                        Spacer()
+                        Text("\(Int(notchCornerRadius)) pt")
+                            .foregroundStyle(.secondary)
+                    }
+                    Slider(value: $notchCornerRadius, in: 8.0...36.0, step: 1.0)
+                }
+
+                Defaults.Toggle(key: .continuousCorners) {
+                    Text("Continuous corners (.continuous Apple superellipse)")
+                }
+            } header: {
+                Text("Notch Appearance")
+            } footer: {
+                Text("Adjusts the background fill and glass blur across the entire notch (Liquid Glass, Dark Surface, Gradient Glow, Accent Tint, or Ultra Transparent). When closed on a MacBook display with a physical camera notch, it seamlessly hides under the notch hardware.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Show clock and date when idle", isOn: $showDateTimeWhenIdle)
+
+                if showDateTimeWhenIdle {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Idle timeout before showing clock")
+                            Spacer()
+                            Text(formattedTimeout)
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $idleClockTimeout, in: 0.0...600.0, step: 10.0)
+                    }
+
+                    Picker("Font design", selection: $dateTimeFontStyle) {
+                        ForEach(DateTimeFontStyle.allCases) { style in
+                            Text(style.rawValue).tag(style)
+                        }
+                    }
+
+                    Picker("Clock font weight", selection: $dateTimeFontWeight) {
+                        ForEach(DateTimeFontWeight.allCases) { weight in
+                            Text(weight.rawValue).tag(weight)
+                        }
+                    }
+
+                    Picker("Widget layout style", selection: $dateTimeLayoutStyle) {
+                        ForEach(DateTimeLayoutStyle.allCases) { style in
+                            Text(style.rawValue).tag(style)
+                        }
+                    }
+
+                    Picker("Color & gradient fill", selection: $dateTimeColorStyle) {
+                        ForEach(DateTimeColorStyle.allCases) { style in
+                            Text(style.rawValue).tag(style)
+                        }
+                    }
+
+                    if dateTimeColorStyle == .palette {
+                        HStack {
+                            Text("Custom color palette")
+                            Spacer()
+                            ColorPicker("", selection: Binding(
+                                get: {
+                                    Color(hex: dateTimeCustomColorHex)
+                                },
+                                set: { newColor in
+                                    let nsColor = NSColor(newColor)
+                                    if let rgb = nsColor.usingColorSpace(.sRGB) {
+                                        let r = Int(rgb.redComponent * 255)
+                                        let g = Int(rgb.greenComponent * 255)
+                                        let b = Int(rgb.blueComponent * 255)
+                                        dateTimeCustomColorHex = String(format: "#%02X%02X%02X", r, g, b)
+                                    }
+                                }
+                            ), supportsOpacity: false)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Clock size")
+                            Spacer()
+                            Text("\(Int(dateTimeClockScale * 100))%")
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $dateTimeClockScale, in: 0.7...1.5, step: 0.05)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Clock & date opacity")
+                            Spacer()
+                            Text("\(Int(dateTimeTextOpacity * 100))%")
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $dateTimeTextOpacity, in: 0.2...1.0, step: 0.05)
+                    }
+
+                    Toggle("24-hour time", isOn: $dateTime24Hour)
+                    Toggle("Show seconds", isOn: $dateTimeShowSeconds)
+                    Toggle("Show day of week", isOn: $dateTimeShowDayOfWeek)
+                }
+            } header: {
+                Text("Clock & Date (Idle Screen)")
+            } footer: {
+                Text("Displays the current time and date when there is no active media playback session, blending natively into the notch background.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section {
                 Toggle("Always show tabs", isOn: $coordinator.alwaysShowTabs)
                 Defaults.Toggle(key: .settingsIconInNotch) {
@@ -1418,8 +1643,11 @@ struct Advanced: View {
     
     @State private var customAccentColor: Color = .accentColor
     @State private var selectedPresetColor: PresetAccentColor? = nil
-    let icons: [String] = ["logo2"]
-    @State private var selectedIcon: String = "logo2"
+
+    @Default(.selectedAppIconID) var selectedAppIconID
+    @Default(.customAppIcons) var customAppIcons
+    @State private var cropItem: CropImageItem? = nil
+    @State private var isPickingImage = false
     
     // macOS accent colors
     enum PresetAccentColor: String, CaseIterable, Identifiable {
@@ -1569,47 +1797,55 @@ struct Advanced: View {
             }
             
             Section {
-                HStack {
-                    ForEach(icons, id: \.self) { icon in
-                        Spacer()
-                        VStack {
-                            Image(icon)
-                                .resizable()
-                                .frame(width: 80, height: 80)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20, style: .circular)
-                                        .strokeBorder(
-                                            icon == selectedIcon ? Color.effectiveAccent : .clear,
-                                            lineWidth: 2.5
-                                        )
-                                )
-
-                            Text("Default")
-                                .fontWeight(.medium)
-                                .font(.caption)
-                                .foregroundStyle(icon == selectedIcon ? .white : .secondary)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 3)
-                                .background(
-                                    Capsule()
-                                        .fill(icon == selectedIcon ? Color.effectiveAccent : .clear)
-                                )
-                        }
-                        .onTapGesture {
-                            withAnimation {
-                                selectedIcon = icon
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        // 1. Default App Icon
+                        AppIconCard(
+                            image: Image("logo2"),
+                            title: "Default",
+                            isSelected: selectedAppIconID == "default",
+                            canDelete: false
+                        ) {
+                            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                AppIconManager.shared.applyIcon(id: "default")
                             }
-                            NSApp.applicationIconImage = NSImage(named: icon)
                         }
-                        Spacer()
+
+                        // 2. Custom App Icons
+                        ForEach(customAppIcons) { item in
+                            if let nsImage = AppIconManager.shared.loadImage(for: item) {
+                                AppIconCard(
+                                    image: Image(nsImage: nsImage),
+                                    title: item.name,
+                                    isSelected: selectedAppIconID == item.id,
+                                    canDelete: true,
+                                    onDelete: {
+                                        withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                            AppIconManager.shared.deleteCustomIcon(item: item)
+                                        }
+                                    }
+                                ) {
+                                    withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                        AppIconManager.shared.applyIcon(id: item.id)
+                                    }
+                                }
+                            }
+                        }
+
+                        // 3. Add Custom Icon Button
+                        AddAppIconCard {
+                            openFinderImagePicker()
+                        }
                     }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 4)
                 }
-                .disabled(true)
             } header: {
-                HStack {
-                    Text("App icon")
-                    customBadge(text: "Coming soon")
-                }
+                Text("App Icon")
+            } footer: {
+                Text("Select an icon or add a custom one from Finder with cropping.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             
             Section {
@@ -1631,8 +1867,59 @@ struct Advanced: View {
         }
         .accentColor(.effectiveAccent)
         .navigationTitle("Advanced")
+        .sheet(item: $cropItem) { item in
+            AppIconCropSheet(sourceImage: item.image) { croppedImage in
+                let newIndex = customAppIcons.count + 1
+                AppIconManager.shared.saveCustomIcon(image: croppedImage, name: "Custom \(newIndex)")
+                cropItem = nil
+            } onCancel: {
+                cropItem = nil
+            }
+        }
         .onAppear {
             loadCustomColor()
+        }
+    }
+
+    private func openFinderImagePicker() {
+        guard !isPickingImage else { return }
+        isPickingImage = true
+
+        NSApp.activate(ignoringOtherApps: true)
+
+        let panel = NSOpenPanel()
+        panel.title = "Select App Icon Image"
+        panel.prompt = "Choose Image"
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = [.image, .png, .jpeg, .tiff, .heic]
+
+        panel.begin { response in
+            defer {
+                DispatchQueue.main.async {
+                    self.isPickingImage = false
+                }
+            }
+
+            guard response == .OK, let url = panel.url else { return }
+
+            // Process and normalize the image on a background queue to ensure UI never freezes
+            DispatchQueue.global(qos: .userInitiated).async {
+                let preparedImage: NSImage? = url.accessSecurityScopedResource { safeUrl in
+                    guard let data = try? Data(contentsOf: safeUrl),
+                          let originalImage = NSImage(data: data) else {
+                        return nil
+                    }
+                    return AppIconCropSheet.normalizeImageForCropping(originalImage)
+                }
+
+                if let finalImage = preparedImage {
+                    DispatchQueue.main.async {
+                        self.cropItem = CropImageItem(image: finalImage)
+                    }
+                }
+            }
         }
     }
     

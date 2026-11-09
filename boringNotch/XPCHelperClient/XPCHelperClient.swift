@@ -2,7 +2,7 @@ import Foundation
 import Cocoa
 import AsyncXPCConnection
 
-final class XPCHelperClient: NSObject {
+final class XPCHelperClient {
     nonisolated static let shared = XPCHelperClient()
     
     private let serviceName = "theboringteam.boringnotch.BoringNotchXPCHelper"
@@ -10,11 +10,11 @@ final class XPCHelperClient: NSObject {
     private var remoteService: RemoteXPCService<BoringNotchXPCHelperProtocol>?
     private var connection: NSXPCConnection?
     private var lastKnownAuthorization: Bool?
-    private var monitoringTask: Task<Void, Never>?
+    
+    nonisolated private init() {}
     
     deinit {
         connection?.invalidate()
-        stopMonitoringAccessibilityAuthorization()
     }
     
     // MARK: - Connection Management (Main Actor Isolated)
@@ -67,32 +67,6 @@ final class XPCHelperClient: NSObject {
             object: nil,
             userInfo: ["granted": granted]
         )
-    }
-
-    // MARK: - Monitoring
-    nonisolated func startMonitoringAccessibilityAuthorization(every interval: TimeInterval = 3.0) {
-        // Ensure only one monitor exists
-        stopMonitoringAccessibilityAuthorization()
-        monitoringTask = Task.detached { [weak self] in
-            guard let self = self else { return }
-            while !Task.isCancelled {
-                // Call the helper method periodically which will notify on change
-                _ = await self.isAccessibilityAuthorized()
-                do {
-                    try await Task.sleep(for: .seconds(interval))
-                } catch { break }
-            }
-        }
-    }
-
-    nonisolated func stopMonitoringAccessibilityAuthorization() {
-        monitoringTask?.cancel()
-        monitoringTask = nil
-    }
-
-    // Expose whether the client is actively monitoring (useful for tests/debug)
-    var isMonitoring: Bool {
-        return monitoringTask != nil
     }
     
     // MARK: - Accessibility
@@ -238,6 +212,25 @@ final class XPCHelperClient: NSObject {
                 }
             }
         } catch {
+            return false
+        }
+    }
+
+    // MARK: - App Icon Management (Unsandboxed helper call)
+
+    nonisolated func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool) async -> Bool {
+        do {
+            let service = await MainActor.run {
+                ensureRemoteService()
+            }
+            let result: Bool = try await service.withContinuation { service, continuation in
+                service.setApplicationBundleIcon(imageData: imageData, bundlePath: bundlePath, refreshDock: refreshDock) { success in
+                    continuation.resume(returning: success)
+                }
+            }
+            return result
+        } catch {
+            print("Failed to set app bundle icon via XPC helper: \(error)")
             return false
         }
     }

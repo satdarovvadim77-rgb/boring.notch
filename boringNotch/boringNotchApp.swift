@@ -22,10 +22,13 @@ struct DynamicNotchApp: App {
 
     init() {
         updaterController = SPUStandardUpdaterController(
-            startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+            startingUpdater: false, updaterDelegate: nil, userDriverDelegate: nil)
 
         // Initialize the settings window controller with the updater controller
         SettingsWindowController.shared.setUpdaterController(updaterController)
+
+        // Restore custom app icon on launch
+        AppIconManager.shared.restoreSavedAppIcon()
     }
 
     var body: some Scene {
@@ -34,7 +37,10 @@ struct DynamicNotchApp: App {
                 SettingsWindowController.shared.showWindow()
             }
             .keyboardShortcut(KeyEquivalent(","), modifiers: .command)
-            CheckForUpdatesView(updater: updaterController.updater)
+            Divider()
+            Defaults.Toggle(key: .energySaverMode) {
+                Text("Energy Saver Mode")
+            }
             Divider()
             Button("Restart Boring Notch") {
                 ApplicationRelauncher.restart()
@@ -70,6 +76,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        AppIconManager.shared.restoreSavedAppIcon()
+        SettingsWindowController.shared.showWindow()
+        return true
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        AppIconManager.shared.restoreSavedAppIcon()
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         NotificationCenter.default.removeObserver(self)
         if let observer = screenLockedObserver {
@@ -83,7 +99,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         MusicManager.shared.destroy()
         cleanupDragDetectors()
         cleanupWindows()
-        XPCHelperClient.shared.stopMonitoringAccessibilityAuthorization()
     }
 
     @MainActor
@@ -268,6 +283,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.alphaValue = 0
         }
 
+        let currentWindowSize = windowSize
+        if window.frame.size != currentWindowSize {
+            window.setContentSize(currentWindowSize)
+        }
+
         let screenFrame = screen.frame
         window.setFrameOrigin(
             NSPoint(
@@ -278,6 +298,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Restore custom or selected app icon if configured
+        AppIconManager.shared.restoreSavedAppIcon()
+        DispatchQueue.main.async {
+            AppIconManager.shared.restoreSavedAppIcon()
+        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -301,6 +326,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             Task { @MainActor in
                 self?.adjustWindowPosition()
                 self?.setupDragDetectors()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name.notchWidthChanged, object: nil, queue: nil
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.adjustWindowPosition()
+                self?.setupDragDetectors()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name.gameModeStateChanged, object: nil, queue: nil
+        ) { [weak self] _ in
+            Task { @MainActor in
+                if GameModeManager.shared.isGameModeActive {
+                    self?.vm.close()
+                    for (_, vm) in (self?.viewModels ?? [:]) {
+                        vm.close()
+                    }
+                }
             }
         }
 
@@ -430,6 +477,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         {
             DispatchQueue.main.async {
                 self.showOnboardingWindow(step: .musicPermission)
+            }
+        }
+        if Defaults[.hudReplacement] {
+            Task { @MainActor in
+               let authorized = await XPCHelperClient.shared.isAccessibilityAuthorized()
+                if authorized {
+                    MediaKeyInterceptor.shared.start(requireAccessibility: true, promptIfNeeded: false)
+                } else {
+                    let granted = await XPCHelperClient.shared.ensureAccessibilityAuthorization(promptIfNeeded: false)
+                    if granted {
+                        MediaKeyInterceptor.shared.start(requireAccessibility: true, promptIfNeeded: false)
+                    }
+                }
             }
         }
 
@@ -598,6 +658,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 extension Notification.Name {
     static let selectedScreenChanged = Notification.Name("SelectedScreenChanged")
     static let notchHeightChanged = Notification.Name("NotchHeightChanged")
+    static let notchWidthChanged = Notification.Name("NotchWidthChanged")
+    static let gameModeStateChanged = Notification.Name("GameModeStateChanged")
+    static let energySaverStateChanged = Notification.Name("EnergySaverStateChanged")
     static let showOnAllDisplaysChanged = Notification.Name("showOnAllDisplaysChanged")
     static let automaticallySwitchDisplayChanged = Notification.Name("automaticallySwitchDisplayChanged")
     static let expandedDragDetectionChanged = Notification.Name("expandedDragDetectionChanged")

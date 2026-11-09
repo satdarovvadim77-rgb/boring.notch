@@ -5,6 +5,7 @@
 //  Created by Alexander on 2025-11-16.
 //
 
+import AppKit
 import Foundation
 import ApplicationServices
 import IOKit
@@ -17,8 +18,8 @@ class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
     }
 
     @objc func requestAccessibilityAuthorization() {
-        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        AXIsProcessTrustedWithOptions(options)
+        let options: CFDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        _ = AXIsProcessTrustedWithOptions(options)
     }
 
     @objc func ensureAccessibilityAuthorization(_ promptIfNeeded: Bool, with reply: @escaping (Bool) -> Void) {
@@ -28,7 +29,8 @@ class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
         }
 
         if promptIfNeeded {
-            requestAccessibilityAuthorization()
+            let options: CFDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+            _ = AXIsProcessTrustedWithOptions(options)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -187,5 +189,46 @@ class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
             }
             return nil
         }()
+    }
+
+    // MARK: - Application Bundle Icon Management (Unsandboxed)
+
+    @objc func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool, with reply: @escaping (Bool) -> Void) {
+        let image: NSImage?
+        if let data = imageData {
+            image = NSImage(data: data)
+        } else {
+            image = nil
+        }
+
+        // 1. Set or remove custom icon on the .app bundle using NSWorkspace
+        let success = NSWorkspace.shared.setIcon(image, forFile: bundlePath, options: [])
+
+        // 2. Touch the bundle path to update its modification date so LaunchServices and Finder detect changes
+        let now = Date()
+        try? FileManager.default.setAttributes([.modificationDate: now], ofItemAtPath: bundlePath)
+
+        // 3. Notify NSWorkspace of file system change
+        NSWorkspace.shared.noteFileSystemChanged(bundlePath)
+
+        // 4. Force LaunchServices to re-register the application bundle
+        let lsregisterPath = "/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister"
+        if FileManager.default.isExecutableFile(atPath: lsregisterPath) {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: lsregisterPath)
+            process.arguments = ["-f", "-R", bundlePath]
+            try? process.run()
+            process.waitUntilExit()
+        }
+
+        // 5. If requested (e.g. user changed icon in Settings), restart Dock to reload icon cache
+        if refreshDock {
+            let killProcess = Process()
+            killProcess.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
+            killProcess.arguments = ["Dock"]
+            try? killProcess.run()
+        }
+
+        reply(success)
     }
 }

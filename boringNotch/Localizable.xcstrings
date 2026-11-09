@@ -201,6 +201,9 @@
         }
       }
     },
+    ":" : {
+
+    },
     "'Now Playing' was the only option on previous versions and works with all media apps." : {
       "localizations" : {
         "ar" : {
@@ -400,6 +403,9 @@
           }
         }
       }
+    },
+    "%.0f pt" : {
+
     },
     "%.0f seconds" : {
       "localizations" : {
@@ -901,6 +907,9 @@
         }
       }
     },
+    "%lld pt" : {
+
+    },
     "%lld%%" : {
       "localizations" : {
         "ar" : {
@@ -1301,6 +1310,9 @@
         }
       }
     },
+    "24-hour time" : {
+
+    },
     "About" : {
       "localizations" : {
         "ar" : {
@@ -1360,7 +1372,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "정보"
+            "value" : "설명"
           }
         },
         "pl" : {
@@ -1618,7 +1630,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Der Zugriff auf Barrierefreiheit ist erforderlich, um das System HUD zu ersetzen."
+            "value" : "Accessibility access is required to replace the system HUD."
           }
         },
         "en" : {
@@ -1660,13 +1672,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "시스템 HUD를 교체하기 위해서는 접근성 권한이 필요합니다."
+            "value" : "Accessibility access is required to replace the system HUD."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zezwolenie dostępności jest wymagane, żeby zastąpić system HUD."
+            "value" : "Accessibility access is required to replace the system HUD."
           }
         },
         "pt-BR" : {
@@ -1800,6 +1812,9 @@
           }
         }
       }
+    },
+    "Add Icon" : {
+
     },
     "Add manually" : {
       "extractionState" : "stale",
@@ -2102,6 +2117,9 @@
         }
       }
     },
+    "Adjusts the background fill and glass blur across the entire notch (Liquid Glass, Dark Surface, Gradient Glow, Accent Tint, or Ultra Transparent). When closed on a MacBook display with a physical camera notch, it seamlessly hides under the notch hardware." : {
+
+    },
     "Advanced" : {
       "localizations" : {
         "ar" : {
@@ -2119,7 +2137,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Erweitert"
+            "value" : "Advanced"
           }
         },
         "en" : {
@@ -2161,13 +2179,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "고급"
+            "value" : "Advanced"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zaawansowane"
+            "value" : "Advanced"
           }
         },
         "pt-BR" : {
@@ -2403,104 +2421,7 @@
       }
     },
     "Always show full event titles" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vollständige Ereignistitel immer anzeigen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Always show full event titles"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "항상 이벤트 제목 보이기"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Zawsze pokazuj pełne tytuły wydarzeń"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Always show full event titles"
-          }
-        }
-      }
+
     },
     "Always show tabs" : {
       "localizations" : {
@@ -2603,6 +2524,7 @@
       }
     },
     "App icon" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2702,6 +2624,9 @@
         }
       }
     },
+    "App Icon" : {
+
+    },
     "Appearance" : {
       "localizations" : {
         "ar" : {
@@ -2761,7 +2686,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "모양"
+            "value" : "외관"
           }
         },
         "pl" : {
@@ -2802,105 +2727,11 @@
         }
       }
     },
+    "Apply as App Icon" : {
+
+    },
     "Auto-scroll to next event" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Automatisch zum nächsten Ereignis scrollen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "다음 이벤트로 오토-스크롤"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Automatyczne przewijanie do następnego wydarzenia"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Auto-scroll to next event"
-          }
-        }
-      }
+
     },
     "Automatically check for updates" : {
       "localizations" : {
@@ -3019,7 +2850,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Updates automatisch herunterladen"
+            "value" : "Automatisch nach Updates suchen"
           }
         },
         "en" : {
@@ -4319,7 +4150,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Medien mit horizontalen Gesten ändern"
+            "value" : "Change media with horizontal gestures"
           }
         },
         "en" : {
@@ -4361,13 +4192,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "수평 제스처로 미디어 변경"
+            "value" : "Change media with horizontal gestures"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zmień multimedia używając poziomych gestów"
+            "value" : "Change media with horizontal gestures"
           }
         },
         "pt-BR" : {
@@ -4819,7 +4650,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Farbe auswählen"
+            "value" : "Choose any color"
           }
         },
         "en" : {
@@ -4861,13 +4692,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "아무 색상을 선택해 주세요"
+            "value" : "Choose any color"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wybierz dowolny kolor"
+            "value" : "Choose any color"
           }
         },
         "pt-BR" : {
@@ -4919,7 +4750,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wählen Sie zwischen der Akzentfarbe Ihres Systems oder passen Sie sie mit Ihrer eigenen Auswahl an."
+            "value" : "Choose between your system accent color or customize it with your own selection."
           }
         },
         "en" : {
@@ -4961,13 +4792,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "시스템 강조 색상을 사용하거나 직접 색상을 선택해 설정하세요."
+            "value" : "Choose between your system accent color or customize it with your own selection."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wybierz kolor akcentu systemowego lub dostosuj go według własnego wyboru."
+            "value" : "Choose between your system accent color or customize it with your own selection."
           }
         },
         "pt-BR" : {
@@ -4997,7 +4828,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : ""
+            "value" : "Choose between your system accent color or customize it with your own selection."
           }
         }
       }
@@ -5019,7 +4850,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wählen Sie den zu verwendenden Dienst aus, wenn Dateien geteilt werden. Klicken Sie auf die Ablage-Taste, um Dateien auszuwählen oder ziehen Sie Dateien auf die Ablage, um sie sofort zu teilen."
+            "value" : "Choose which service to use when sharing files from the shelf. Click the shelf button to select files, or drag files onto it to share immediately."
           }
         },
         "en" : {
@@ -5061,13 +4892,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "선반에서 파일을 공유할 때 사용할 서비스를 선택하세요. 선반 버튼을 클릭해 파일을 선택하거나, 파일을 끌어다 놓으면 바로 공유할 수 있습니다."
+            "value" : "Choose which service to use when sharing files from the shelf. Click the shelf button to select files, or drag files onto it to share immediately."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wybierz usługę używaną podczas udostępniania plików z półki. Kliknij przycisk półki, aby wybrać pliki, lub przeciągnij pliki na niego, aby udostępnić natychmiast."
+            "value" : "Choose which service to use when sharing files from the shelf. Click the shelf button to select files, or drag files onto it to share immediately."
           }
         },
         "pt-BR" : {
@@ -5219,7 +5050,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Slot leeren"
+            "value" : "Clear slot"
           }
         },
         "en" : {
@@ -5261,13 +5092,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "슬롯 초기화"
+            "value" : "Clear slot"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wyczyść slot"
+            "value" : "Clear slot"
           }
         },
         "pt-BR" : {
@@ -5301,6 +5132,18 @@
           }
         }
       }
+    },
+    "Clock & Date (Idle Screen)" : {
+
+    },
+    "Clock & date opacity" : {
+
+    },
+    "Clock font weight" : {
+
+    },
+    "Clock size" : {
+
     },
     "Close" : {
       "localizations" : {
@@ -5502,105 +5345,11 @@
         }
       }
     },
-    "Closed Notch" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Closed Notch"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Closed Notch"
-          }
-        }
-      }
+    "Closed width on non-notch displays" : {
+
+    },
+    "Color & gradient fill" : {
+
     },
     "Color Presets" : {
       "localizations" : {
@@ -5619,7 +5368,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Farbvorgaben"
+            "value" : "Color Presets"
           }
         },
         "en" : {
@@ -5661,13 +5410,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "색상 프리셋들"
+            "value" : "Color Presets"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Predefiniowane kolory"
+            "value" : "Color Presets"
           }
         },
         "pt-BR" : {
@@ -5719,7 +5468,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Farbiges Spektrogramm"
+            "value" : "Colored spectrogram"
           }
         },
         "en" : {
@@ -5761,13 +5510,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "컬러 스펙트로그램"
+            "value" : "Colored spectrogram"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Kolorowy spektrogram"
+            "value" : "Colored spectrogram"
           }
         },
         "pt-BR" : {
@@ -6002,6 +5751,9 @@
         }
       }
     },
+    "Continuous corners (.continuous Apple superellipse)" : {
+
+    },
     "Copy items on drag" : {
       "localizations" : {
         "ar" : {
@@ -6019,7 +5771,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Elemente beim Draufziehen kopieren"
+            "value" : "Copy items on drag"
           }
         },
         "en" : {
@@ -6061,13 +5813,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "드래그로 항목 복사"
+            "value" : "Copy items on drag"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Kopiuj elementy po przeciągnięciu"
+            "value" : "Copy items on drag"
           }
         },
         "pt-BR" : {
@@ -6102,6 +5854,9 @@
         }
       }
     },
+    "Corner radius" : {
+
+    },
     "Corner radius scaling" : {
       "localizations" : {
         "ar" : {
@@ -6119,7 +5874,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Skalierung Eckenradius"
+            "value" : "Eckenradius Skalierung"
           }
         },
         "en" : {
@@ -6161,7 +5916,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "모서리 반경 크기 조정"
+            "value" : "Corner radius scaling"
           }
         },
         "pl" : {
@@ -6202,6 +5957,9 @@
         }
       }
     },
+    "Crop App Icon" : {
+
+    },
     "Currently selected: %@" : {
       "localizations" : {
         "ar" : {
@@ -6219,7 +5977,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Derzeit ausgewählt: %@"
+            "value" : "Currently selected: %@"
           }
         },
         "en" : {
@@ -6261,13 +6019,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "현재 선택된: %@"
+            "value" : "Currently selected: %@"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Aktualnie wybrane: %@"
+            "value" : "Currently selected: %@"
           }
         },
         "pt-BR" : {
@@ -6319,7 +6077,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Benutzerdefiniert"
+            "value" : "Custom"
           }
         },
         "en" : {
@@ -6361,13 +6119,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "사용자정의"
+            "value" : "Custom"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Niestandardowe"
+            "value" : "Custom"
           }
         },
         "pt-BR" : {
@@ -6401,6 +6159,9 @@
           }
         }
       }
+    },
+    "Custom color palette" : {
+
     },
     "Custom height" : {
       "localizations" : {
@@ -6919,7 +6680,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Passen Sie an, welche Steuerelemente im Musik-Player angezeigt werden. Die Lautstärke wird erweitert, wenn aktiviert."
+            "value" : "Customize which controls appear in the music player. Volume expands when active."
           }
         },
         "en" : {
@@ -6961,13 +6722,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "음악 플레이어에 표시할 컨트롤을 사용자 지정하세요. 볼륨은 활성화되면 확장됩니다."
+            "value" : "Customize which controls appear in the music player. Volume expands when active."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Dostosuj które ustawienia wyświetlane w odtwarzaczu muzyki. Głośność rozwija się, gdy jest aktywna."
+            "value" : "Customize which controls appear in the music player. Volume expands when active."
           }
         },
         "pt-BR" : {
@@ -7304,6 +7065,9 @@
         }
       }
     },
+    "Disable notch expansion on hover during games" : {
+
+    },
     "Disabled" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7404,6 +7168,9 @@
           }
         }
       }
+    },
+    "Displays the current time and date when there is no active media playback session, blending natively into the notch background." : {
+
     },
     "Download" : {
       "localizations" : {
@@ -7623,7 +7390,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ziehen Sie ein Steuerelement auf einen Slot"
+            "value" : "Drag a control onto a slot"
           }
         },
         "en" : {
@@ -7665,13 +7432,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "컨트롤을 슬롯으로 끌어다 놓으세요."
+            "value" : "Drag a control onto a slot"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Przeciągnij sterowanie na slot"
+            "value" : "Drag a control onto a slot"
           }
         },
         "pt-BR" : {
@@ -7723,7 +7490,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ziehen Sie Elemente in die Vorschau, um sie neu zu ordnen oder aus der Palette zu ziehen"
+            "value" : "Drag items in the preview to reorder or drop from the palette"
           }
         },
         "en" : {
@@ -7765,13 +7532,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "미리보기에서 항목을 끌어 순서를 변경하거나 팔레트에서 끌어다 놓으세요."
+            "value" : "Drag items in the preview to reorder or drop from the palette"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Przeciągnij elementy w podglądzie, aby zmienić kolejność lub upuścić z palety"
+            "value" : "Drag items in the preview to reorder or drop from the palette"
           }
         },
         "pt-BR" : {
@@ -7805,6 +7572,9 @@
           }
         }
       }
+    },
+    "Drag the image to reposition, and use the slider to zoom." : {
+
     },
     "Drop files here" : {
       "localizations" : {
@@ -8106,6 +7876,106 @@
         }
       }
     },
+    "Enable Accessibility in System Settings → Privacy & Security → Accessibility" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enable Accessibility in System Settings → Privacy & Security → Accessibility"
+          }
+        }
+      }
+    },
     "Enable blur effect behind album art" : {
       "localizations" : {
         "ar" : {
@@ -8366,7 +8236,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "컬러 스펙트로그램을 활성화하세요"
+            "value" : "Enable colored spectrograms"
           }
         },
         "pl" : {
@@ -8624,7 +8494,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Haptisches Feedback aktivieren"
+            "value" : "Enable haptic feedback"
           }
         },
         "en" : {
@@ -8666,13 +8536,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "햅틱 피드백 활성화"
+            "value" : "Enable haptic feedback"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Włącz informację zwrotną w postaci wibracji"
+            "value" : "Enable haptic feedback"
           }
         },
         "pt-BR" : {
@@ -8907,6 +8777,12 @@
         }
       }
     },
+    "Energy & Performance" : {
+
+    },
+    "Energy Saver Mode" : {
+
+    },
     "Enhance your experience with HUDs" : {
       "localizations" : {
         "ar" : {
@@ -9108,104 +8984,7 @@
       }
     },
     "Expanded drag detection area" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Erweiterter Ziehen Erkennungsbereich"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "확장된 드래그 감지 영역"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rozszerzony obszar wykrywania przeciągnięcia"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Expanded drag detection area"
-          }
-        }
-      }
+
     },
     "Extend hover area" : {
       "localizations" : {
@@ -9425,7 +9204,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Dateien, die in der Ablage abgelegt werden, werden über diesen Dienst geteilt"
+            "value" : "Files dropped on the shelf will be shared via this service"
           }
         },
         "en" : {
@@ -9467,13 +9246,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "선반에 놓인 파일은 이 서비스를 통해 공유됩니다."
+            "value" : "Files dropped on the shelf will be shared via this service"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pliki upuszczone na półkę będą udostępniane za pośrednictwem tej usługi"
+            "value" : "Files dropped on the shelf will be shared via this service"
           }
         },
         "pt-BR" : {
@@ -9608,105 +9387,14 @@
         }
       }
     },
+    "Font design" : {
+
+    },
     "Full screen behavior" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vollbild-Verhalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full screen behavior"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "전체 화면 동작"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Zachowanie na pełnym ekranie"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Full screen behavior"
-          }
-        }
-      }
+
+    },
+    "Game Mode" : {
+
     },
     "General" : {
       "localizations" : {
@@ -10425,7 +10113,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ganztägige Ereignisse ausblenden"
+            "value" : "Hide all-day events"
           }
         },
         "en" : {
@@ -10467,13 +10155,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "종일 이벤트를 숨기기"
+            "value" : "Hide all-day events"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ukryj wydarzenia całodniowe"
+            "value" : "Hide all-day events"
           }
         },
         "pt-BR" : {
@@ -10567,7 +10255,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "완료된 알림 숨기기"
+            "value" : "Hide completed reminders"
           }
         },
         "pl" : {
@@ -10609,204 +10297,10 @@
       }
     },
     "Hide for all apps" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Für alle Apps ausblenden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide for all apps"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "모든 앱에서 숨기기"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ukryj dla wszystkich aplikacji"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for all apps"
-          }
-        }
-      }
+
     },
     "Hide for media app only" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Nur für Medien-App ausblenden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide for media app only"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "미디어 앱에서만 숨기기"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ukryj tylko dla aplikacji multimediów"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide for media app only"
-          }
-        }
-      }
+
     },
     "Hide from screen recording" : {
       "localizations" : {
@@ -10825,7 +10319,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Bei Bildschirmaufnahmen ausblenden"
+            "value" : "Hide from screen recording"
           }
         },
         "en" : {
@@ -10867,13 +10361,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "화면 녹화 시 숨기기"
+            "value" : "Hide from screen recording"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ukryj przed nagrywaniem ekranu"
+            "value" : "Hide from screen recording"
           }
         },
         "pt-BR" : {
@@ -10909,104 +10403,7 @@
       }
     },
     "Hide title bar" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Titelleiste ausblenden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide title bar"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "제목 표시줄 숨기기"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ukryj pasek tytułu"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Hide title bar"
-          }
-        }
-      }
+
     },
     "Hierarchical" : {
       "localizations" : {
@@ -11225,7 +10622,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Schwebeverzögerung"
+            "value" : "Hover delay"
           }
         },
         "en" : {
@@ -11267,13 +10664,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "호버 지연 시간"
+            "value" : "Hover delay"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Opóźnienie po najechaniu"
+            "value" : "Hover delay"
           }
         },
         "pt-BR" : {
@@ -11608,6 +11005,9 @@
         }
       }
     },
+    "Idle timeout before showing clock" : {
+
+    },
     "In progress" : {
       "localizations" : {
         "ar" : {
@@ -11926,7 +11326,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Layoutvorschau"
+            "value" : "Layout Preview"
           }
         },
         "en" : {
@@ -11968,13 +11368,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "레이아웃 미리보기"
+            "value" : "Layout Preview"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Podgląd układu"
+            "value" : "Layout Preview"
           }
         },
         "pt-BR" : {
@@ -12008,6 +11408,9 @@
           }
         }
       }
+    },
+    "Liquid glass effect / Opacity" : {
+
     },
     "Lottie JSON URL" : {
       "localizations" : {
@@ -12626,7 +12029,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "An Höhe der Menüleiste anpassen"
+            "value" : "Match menu bar height"
           }
         },
         "en" : {
@@ -12668,13 +12071,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "메뉴바 높이에 맞추기"
+            "value" : "Match menu bar height"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Dopasuj do wysokości paska menu"
+            "value" : "Match menu bar height"
           }
         },
         "pt-BR" : {
@@ -12826,7 +12229,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "An Größe der echten Notch anpassen"
+            "value" : "Match real notch height"
           }
         },
         "en" : {
@@ -12868,13 +12271,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "실제 노치 크기에 맞추기"
+            "value" : "Match real notch height"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Dopasuj do rzeczywistego rozmiaru notcha"
+            "value" : "Match real notch height"
           }
         },
         "pt-BR" : {
@@ -13709,6 +13112,9 @@
         }
       }
     },
+    "Minimize background activity in Game Mode" : {
+
+    },
     "Mirror" : {
       "localizations" : {
         "ar" : {
@@ -14209,106 +13615,6 @@
         }
       }
     },
-    "Muted" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muted"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Muted"
-          }
-        }
-      }
-    },
     "Name" : {
       "localizations" : {
         "ar" : {
@@ -14726,7 +14032,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Keine Ereignisse"
+            "value" : "No events"
           }
         },
         "en" : {
@@ -14768,13 +14074,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "이벤트 없음"
+            "value" : "No events"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Brak wydarzeń"
+            "value" : "No events"
           }
         },
         "pt-BR" : {
@@ -15110,6 +14416,12 @@
         }
       }
     },
+    "Notch Appearance" : {
+
+    },
+    "Notch background style" : {
+
+    },
     "Notch behavior" : {
       "localizations" : {
         "ar" : {
@@ -15227,7 +14539,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Notch Höhe auf nicht-notch Displays"
+            "value" : "Notch height on non-notch displays"
           }
         },
         "en" : {
@@ -15269,13 +14581,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "노치 없는 디스플레이에서 노치 높이"
+            "value" : "Notch height on non-notch displays"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wysokość notcha na wyświetlaczach bez notcha"
+            "value" : "Notch height on non-notch displays"
           }
         },
         "pt-BR" : {
@@ -15327,7 +14639,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Notch Höhe auf Notch Displays"
+            "value" : "Notch height on notch displays"
           }
         },
         "en" : {
@@ -15369,13 +14681,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "노치 디스플레이에서 노치 높이"
+            "value" : "Notch height on notch displays"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wysokość notcha na wyświetlaczach z notchem"
+            "value" : "Notch height on notch displays"
           }
         },
         "pt-BR" : {
@@ -15427,7 +14739,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Notchgröße"
+            "value" : "Notch sizing"
           }
         },
         "en" : {
@@ -15469,13 +14781,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "노치 크기 조정"
+            "value" : "Notch sizing"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Rozmiar Notcha"
+            "value" : "Notch sizing"
           }
         },
         "pt-BR" : {
@@ -15610,106 +14922,6 @@
         }
       }
     },
-    "Open Notch" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Notch"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Notch"
-          }
-        }
-      }
-    },
     "Open notch on hover" : {
       "localizations" : {
         "ar" : {
@@ -15809,6 +15021,9 @@
           }
         }
       }
+    },
+    "Open notch width" : {
+
     },
     "Open Reminder Settings" : {
       "localizations" : {
@@ -15969,7 +15184,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "항목이 있으면 기본으로 선반 열기"
+            "value" : "Open shelf by default if items are present"
           }
         },
         "pl" : {
@@ -16027,7 +15242,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Verhalten der Optionstaste"
+            "value" : "Option key behaviour"
           }
         },
         "en" : {
@@ -16069,13 +15284,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "옵션 키 동작"
+            "value" : "Option key behaviour"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zachowanie klawisza opcji"
+            "value" : "Option key behaviour"
           }
         },
         "pt-BR" : {
@@ -16127,7 +15342,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wähle eine Farbe"
+            "value" : "Pick a Color"
           }
         },
         "en" : {
@@ -16169,13 +15384,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "색상 선택"
+            "value" : "Pick a Color"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wybierz kolor"
+            "value" : "Pick a Color"
           }
         },
         "pt-BR" : {
@@ -16327,7 +15542,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Bevorzugter Bildschirm"
+            "value" : "Preferred display"
           }
         },
         "en" : {
@@ -16369,13 +15584,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "선호 디스플레이"
+            "value" : "Preferred display"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Preferowany wyświetlacz"
+            "value" : "Preferred display"
           }
         },
         "pt-BR" : {
@@ -16410,102 +15625,102 @@
         }
       }
     },
-    "Progress bar style" : {
+    "Progressbar style" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Styl ukazatele průběhu"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Fortschrittsleistenstil"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Progress bar style"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Estilo de la barra de progreso"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Style de la barre de progression"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Stile barra di avanzamento"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "진행 바 스타일"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Styl paska postępu"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "İlerleme çubuğu stili"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "Progressbar style"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Progress bar style"
+            "value" : "进度条样式"
           }
         }
       }
@@ -16527,7 +15742,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Schnellteilen"
+            "value" : "Quick Share"
           }
         },
         "en" : {
@@ -16569,13 +15784,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "퀵 쉐어"
+            "value" : "Quick Share"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Szybkie udostępnianie"
+            "value" : "Quick Share"
           }
         },
         "pt-BR" : {
@@ -16627,7 +15842,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Schnellteildienst"
+            "value" : "Quick Share Service"
           }
         },
         "en" : {
@@ -16669,13 +15884,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "퀵 쉐어 서비스"
+            "value" : "Quick Share Service"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Usługa szybkiego udostępniania"
+            "value" : "Quick Share Service"
           }
         },
         "pt-BR" : {
@@ -16909,6 +16124,12 @@
           }
         }
       }
+    },
+    "Reduce load when on battery" : {
+
+    },
+    "Reduces CPU and battery consumption by lowering animation frame rates, pausing non-essential timers, and suspending background network requests." : {
+
     },
     "Release name" : {
       "localizations" : {
@@ -17327,7 +16548,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Nach Ziehen aus der Ablage entfernen"
+            "value" : "Remove from shelf after dragging"
           }
         },
         "en" : {
@@ -17369,13 +16590,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "드래그 후 선반에서 제거"
+            "value" : "Remove from shelf after dragging"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Usuń z półki po przeciąganiu"
+            "value" : "Remove from shelf after dragging"
           }
         },
         "pt-BR" : {
@@ -17427,7 +16648,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "System HUD ersetzen"
+            "value" : "Replace system HUD"
           }
         },
         "en" : {
@@ -17469,13 +16690,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "시스템 HUD 교체"
+            "value" : "Replace system HUD"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zastąp system HUD"
+            "value" : "Replace system HUD"
           }
         },
         "pt-BR" : {
@@ -17506,106 +16727,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Replace system HUD"
-          }
-        }
-      }
-    },
-    "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Replaces the standard macOS volume, display brightness, and keyboard brightness HUDs with a custom design."
           }
         }
       }
@@ -17627,7 +16748,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Bedienungshilfen anfordern"
+            "value" : "Request Accessibility"
           }
         },
         "en" : {
@@ -17669,13 +16790,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "접근성 권한 요청"
+            "value" : "Request Accessibility"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Prośba o dostępność"
+            "value" : "Request Accessibility"
           }
         },
         "pt-BR" : {
@@ -17710,6 +16831,9 @@
         }
       }
     },
+    "Reset" : {
+
+    },
     "Reset to Defaults" : {
       "localizations" : {
         "ar" : {
@@ -17727,7 +16851,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Auf Standard zurücksetzen"
+            "value" : "Reset to Defaults"
           }
         },
         "en" : {
@@ -17769,13 +16893,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "기본값으로 재설정"
+            "value" : "Reset to Defaults"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Przywróć ustawienia domyślne"
+            "value" : "Reset to Defaults"
           }
         },
         "pt-BR" : {
@@ -18111,6 +17235,9 @@
           }
         }
       }
+    },
+    "Select an icon or add a custom one from Finder with cropping." : {
+
     },
     "Select the music source you want to use. You can change this later in the app settings." : {
       "localizations" : {
@@ -19012,6 +18139,9 @@
         }
       }
     },
+    "Show clock and date when idle" : {
+
+    },
     "Show cool face animation while inactive" : {
       "localizations" : {
         "ar" : {
@@ -19029,7 +18159,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zeige coole Gesichtsanimation während Inaktivität"
+            "value" : "Show cool face animation while inactive"
           }
         },
         "en" : {
@@ -19071,13 +18201,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "비활성 시 쿨한 얼굴 애니메이션 표시"
+            "value" : "Show cool face animation while inactive"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wyświetlaj fajną animację twarzy podczas bezczynności"
+            "value" : "Show cool face animation while inactive"
           }
         },
         "pt-BR" : {
@@ -19112,105 +18242,8 @@
         }
       }
     },
-    "Show HUD in open notch" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show HUD in open notch"
-          }
-        }
-      }
+    "Show day of week" : {
+
     },
     "Show lyrics below artist name" : {
       "localizations" : {
@@ -19229,7 +18262,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Songtexte unter Künstlernamen anzeigen"
+            "value" : "Show lyrics below artist name"
           }
         },
         "en" : {
@@ -19271,13 +18304,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "아티스트 이름 아래 가사 표시"
+            "value" : "Show lyrics below artist name"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pokaż tekst utworu pod nazwą wykonawcy"
+            "value" : "Show lyrics below artist name"
           }
         },
         "pt-BR" : {
@@ -19329,7 +18362,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Menüleistensymbol anzeigen"
+            "value" : "Show menu bar icon"
           }
         },
         "en" : {
@@ -19371,13 +18404,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "메뉴 막대 아이콘 표시"
+            "value" : "Show menu bar icon"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Włącz ikonę na pasku menu"
+            "value" : "Show menu bar icon"
           }
         },
         "pt-BR" : {
@@ -19429,7 +18462,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Musik-Live-Aktivität anzeigen"
+            "value" : "Show music live activity"
           }
         },
         "en" : {
@@ -19471,13 +18504,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "음악 실시간 현황 켜기"
+            "value" : "Show music live activity"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pokaż aktywność muzyczną na żywo"
+            "value" : "Show music live activity"
           }
         },
         "pt-BR" : {
@@ -19529,7 +18562,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Notch auf dem Sperrbildschirm anzeigen"
+            "value" : "Show notch on lock screen"
           }
         },
         "en" : {
@@ -19571,13 +18604,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "잠금 화면에 노치 표시"
+            "value" : "Show notch on lock screen"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pokaż notch na ekranie blokady"
+            "value" : "Show notch on lock screen"
           }
         },
         "pt-BR" : {
@@ -19708,106 +18741,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "在所有显示器上显示"
-          }
-        }
-      }
-    },
-    "Show percentage" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show percentage"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Show percentage"
           }
         }
       }
@@ -20012,6 +18945,9 @@
         }
       }
     },
+    "Show seconds" : {
+
+    },
     "Show settings icon in notch" : {
       "localizations" : {
         "ar" : {
@@ -20029,7 +18965,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Einstellungssymbol in Noch anzeigen"
+            "value" : "Show settings icon in notch"
           }
         },
         "en" : {
@@ -20071,13 +19007,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "노치에 설정 아이콘 보이기"
+            "value" : "Show settings icon in notch"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pokaż ikonę ustawień w notchu"
+            "value" : "Show settings icon in notch"
           }
         },
         "pt-BR" : {
@@ -20129,7 +19065,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zeige Sneakpeek bei Wiedergabeänderungen"
+            "value" : "Show sneak peek on playback changes"
           }
         },
         "en" : {
@@ -20171,13 +19107,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "재생 변경 시 훔쳐보기 표시"
+            "value" : "Show sneak peek on playback changes"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pokaż podgląd przy zmianach odtwarzania"
+            "value" : "Show sneak peek on playback changes"
           }
         },
         "pt-BR" : {
@@ -20914,7 +19850,6 @@
       }
     },
     "Support Us" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -21073,7 +20008,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "시스템"
+            "value" : "System"
           }
         },
         "pl" : {
@@ -21331,7 +20266,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Leiste in Akzentfarbe färben"
+            "value" : "Tint progress bar with accent color"
           }
         },
         "en" : {
@@ -21373,13 +20308,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "강조 색상으로 진행 바 색상 변경"
+            "value" : "Tint progress bar with accent color"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Przyciemnij pasek postępu przy użyciu koloru akcentu"
+            "value" : "Tint progress bar with accent color"
           }
         },
         "pt-BR" : {
@@ -22015,106 +20950,6 @@
         }
       }
     },
-    "Unmuted" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unmuted"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Unmuted"
-          }
-        }
-      }
-    },
     "Upgrade to Pro" : {
       "localizations" : {
         "ar" : {
@@ -22315,6 +21150,107 @@
         }
       }
     },
+    "Use simpler close animation" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Použít jednodušší animaci zavření"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nutze vereinfachte Schließanimation"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Usar animación de cierre simple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Utiliser une animation de fermeture simplifiée"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Usa animazione di chiusura semplice"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "닫기 효과 간단하게"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Użyj prostszej animacji zamknięcia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Daha basit kapatma animasyonu kullanın"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use simpler close animation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "使用更简单的关闭动画"
+          }
+        }
+      }
+    },
     "Use your macOS system accent color" : {
       "localizations" : {
         "ar" : {
@@ -22332,7 +21268,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "macOS-System-Akzentfarbe verwenden"
+            "value" : "Use your macOS system accent color"
           }
         },
         "en" : {
@@ -22374,13 +21310,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "MacOS 시스템 강조 색상 사용"
+            "value" : "Use your macOS system accent color"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Użyj koloru akcentu systemu macOS"
+            "value" : "Use your macOS system accent color"
           }
         },
         "pt-BR" : {
@@ -22432,7 +21368,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "System Akzent verwenden"
+            "value" : "Using System Accent"
           }
         },
         "en" : {
@@ -22474,13 +21410,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "시스템 강조 색상 사용"
+            "value" : "Using System Accent"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Korzystanie z akcentu systemowego"
+            "value" : "Using System Accent"
           }
         },
         "pt-BR" : {
@@ -22732,7 +21668,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Auf GitHub: pear-devs/pear-desktop anschauen"
+            "value" : "View on GitHub: pear-devs/pear-desktop"
           }
         },
         "en" : {
@@ -22774,13 +21710,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "GitHub에서 보기: pear-devs/pear-desktop"
+            "value" : "View on GitHub: pear-devs/pear-desktop"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zobacz na GitHub: pear-devs/pear-desktop"
+            "value" : "View on GitHub: pear-devs/pear-desktop"
           }
         },
         "pt-BR" : {
@@ -23015,6 +21951,12 @@
         }
       }
     },
+    "When a full-screen game is running, boring.notch automatically prevents expanding on mouse hover and reduces background resource usage." : {
+
+    },
+    "Widget layout style" : {
+
+    },
     "Window Appearance" : {
       "localizations" : {
         "ar" : {
@@ -23032,7 +21974,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Fenster-Erscheinungsbild"
+            "value" : "Window Appearance"
           }
         },
         "en" : {
@@ -23074,13 +22016,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "창 모양"
+            "value" : "Window Appearance"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Wygląd okna"
+            "value" : "Window Appearance"
           }
         },
         "pt-BR" : {
@@ -23132,7 +22074,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Fensterverhalten"
+            "value" : "Window Behavior"
           }
         },
         "en" : {
@@ -23174,13 +22116,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "창 동작"
+            "value" : "Window Behavior"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Zachowanie okna"
+            "value" : "Window Behavior"
           }
         },
         "pt-BR" : {
@@ -23432,7 +22374,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Akzentfarbe Ihres macOS-Systems"
+            "value" : "Your macOS system accent color"
           }
         },
         "en" : {
@@ -23474,13 +22416,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "macOS 시스템 강조 색상"
+            "value" : "Your macOS system accent color"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Kolor akcentu twojego systemu macOS"
+            "value" : "Your macOS system accent color"
           }
         },
         "pt-BR" : {

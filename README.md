@@ -1,3 +1,15 @@
+> [!NOTE]
+> **Это неофициальная кастомная сборка** [TheBoredTeam/boring.notch](https://github.com/TheBoredTeam/boring.notch), основанная на версии **v2.7.3**.
+> Оригинальный проект и все права на него принадлежат The Bored Team. Распространяется под той же лицензией [GPL-3.0](LICENSE).
+>
+> **Изменения в этой сборке:**
+> - Поддержка **Яндекс Музыки** как источника медиа (`YandexMusicController`, `YandexMusicHelper`)
+> - Пользовательские иконки приложения с кадрированием (`AppIconManager`, `AppIconCropSheet`)
+> - Менеджеры энергосбережения и игрового режима (`EnergySaverManager`, `GameModeManager`)
+> - Дата/время в notch (`NotchDateTimeView`), доработки UI, настроек и перехвата медиаклавиш
+>
+> Об ошибках этой сборки сообщайте в [Issues этого репозитория](https://github.com/satdarovvadim77-rgb/boring.notch/issues), а не в оригинальный проект.
+
 <h1 align="center">
   <br>
   <a href="http://thebored.name"><img src="https://framerusercontent.com/images/RFK4vs0kn8pRMuOO58JeyoemXA.png?scale-down-to=256" alt="Boring Notch" width="150"></a>

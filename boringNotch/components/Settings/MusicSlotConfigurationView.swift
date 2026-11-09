@@ -14,7 +14,7 @@ struct MusicSlotConfigurationView: View {
     @ObservedObject private var musicManager = MusicManager.shared
     @State private var draggedSlot: MusicControlButton?
 
-    private let fixedSlotCount: Int = 5
+    private let fixedSlotCount: Int = MusicControlButton.maxSlotCount
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -230,24 +230,17 @@ struct MusicSlotConfigurationView: View {
     }
 
     private func previewIconColor(for slot: MusicControlButton) -> Color {
-        switch slot {
-        case .shuffle:
-            return musicManager.isShuffled ? .red : .primary
-        case .repeatMode:
-            return musicManager.repeatMode != .off ? .red : .primary
-        case .favorite:
-            return musicManager.isFavoriteTrack ? .red : .primary
-        case .playPause:
-            return .primary
-        default:
-            return .primary
-        }
+        return .white
     }
 
     private func ensureSlotCapacity(_ target: Int) {
-        guard target > musicControlSlots.count else { return }
-        let missing = target - musicControlSlots.count
-        musicControlSlots.append(contentsOf: Array(repeating: .none, count: missing))
+        if target > musicControlSlots.count {
+            let missing = target - musicControlSlots.count
+            musicControlSlots.append(contentsOf: Array(repeating: .none, count: missing))
+        }
+        if musicControlSlots.contains(.mute) {
+            musicControlSlots = musicControlSlots.map { $0 == .mute ? .none : $0 }
+        }
     }
 
     private func slotBinding(for index: Int) -> Binding<MusicControlButton> {

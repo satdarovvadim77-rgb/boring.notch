@@ -20,5 +20,7 @@ import Foundation
     func isScreenBrightnessAvailable(with reply: @escaping (Bool) -> Void)
     func currentScreenBrightness(with reply: @escaping (NSNumber?) -> Void)
     func setScreenBrightness(_ value: Float, with reply: @escaping (Bool) -> Void)
+    // Application bundle icon on-disk management
+    func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool, with reply: @escaping (Bool) -> Void)
 }
 
