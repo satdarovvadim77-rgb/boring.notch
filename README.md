@@ -2,13 +2,53 @@
 > **Это неофициальная кастомная сборка** [TheBoredTeam/boring.notch](https://github.com/TheBoredTeam/boring.notch), основанная на версии **v2.7.3**.
 > Оригинальный проект и все права на него принадлежат The Bored Team. Распространяется под той же лицензией [GPL-3.0](LICENSE).
 >
-> **Изменения в этой сборке:**
-> - Поддержка **Яндекс Музыки** как источника медиа (`YandexMusicController`, `YandexMusicHelper`)
-> - Пользовательские иконки приложения с кадрированием (`AppIconManager`, `AppIconCropSheet`)
-> - Менеджеры энергосбережения и игрового режима (`EnergySaverManager`, `GameModeManager`)
-> - Дата/время в notch (`NotchDateTimeView`), доработки UI, настроек и перехвата медиаклавиш
->
 > Об ошибках этой сборки сообщайте в [Issues этого репозитория](https://github.com/satdarovvadim77-rgb/boring.notch/issues), а не в оригинальный проект.
+
+## 🚀 Изменения относительно оригинального репозитория (`v2.7.3`)
+
+### 🎵 Медиа и плееры
+- **Интеграция с Яндекс Музыкой (`YandexMusicController`, `YandexMusicHelper`)**:
+  - Поддержка Яндекс Музыки (`ru.yandex.desktop.music`) как отдельного медиаконтроллера.
+  - Реализация кнопок «Лайк» и «Дизлайк» через macOS Accessibility API (`AXUIElement`) и нативные команды.
+  - Кэширование состояния процесса Яндекс Музыки через уведомления `NSWorkspace` вместо опроса списка процессов на каждом обновлении стейта.
+  - Точная фильтрация `bundleIdentifier` без ложного приписывания сторонних треков Яндекс Музыке и без рассинхронизации оптимистичного `togglePlay()`.
+- **Фолбэк контроллеров (`AppleMusicController`, `NowPlayingController`)**:
+  - Восстановлен `AppleMusicController` в `MediaControllerType` как полноценный рабочий фолбэк при устаревании `NowPlayingController` на новых версиях macOS.
+  - Выделены отдельные сервисы для работы с текстами песен (`LyricsService` с предкомпилированным регулярным выражением LRC) и обложками альбомов (`ArtworkService`).
+- **Перехват медиаклавиш (`MediaKeyInterceptor`)**:
+  - Улучшена маршрутизация системных медиаклавиш и управление громкостью активного плеера.
+
+### 🎨 Интерфейс, кастомизация и режимы работы
+- **Пользовательские иконки приложения (`AppIconManager`, `AppIconCropSheet`)**:
+  - Выбор пресетов и загрузка собственной иконки с интерактивным кадрированием.
+  - Безопасная смена иконки в рантайме (`NSApp.applicationIconImage` + `NSApp.dockTile`) только при её реальном изменении — без записи `Icon\r` в `.app`-бандл, без поломки цифровой подписи/Sparkle и без перезапуска Dock.
+- **Экран даты и времени в Notch (`NotchDateTimeView`)**:
+  - Отображение часов, даты и быстрых индикаторов в свёрнутом/развёрнутом состояниях.
+- **Энергосбережение и Игровой режим (`EnergySaverManager`, `GameModeManager`)**:
+  - Автоматическое снижение частоты кадров анимаций и отключение тяжёлых визуальных эффектов при низком заряде батареи, в режиме энергосбережения или при запуске полноэкранных игр.
+- **Кастомный акцентный цвет (`Color+AccentColor`, `VisualEffectView`)**:
+  - Поддержка пользовательского акцентного цвета и улучшенное сглаживание углов (`NotchShape`).
+
+### 🔒 Безопасность и архитектура
+- **Защита XPC-хелпера (`BoringNotchXPCHelper`)**:
+  - Проверка клиентского процесса по `bundleIdentifier` (`theboringteam.boringnotch`), пути родительского `.app`-бандла и требованию кодовой подписи (`setCodeSigningRequirement`).
+- **Модульность и декомпозиция**:
+  - Крупные монолитные файлы разделены на модули: `SettingsView` → `GeneralSettingsView`, `MediaSettingsView`, `AppearanceSettingsView`, `AdvancedSettingsView`; `MusicManager` → `LyricsService`, `ArtworkService`; `ContentView` → `ContentView+Subviews`; `ShelfItemViewModel` → `ShelfItemContextMenu`.
+- **Swift Concurrency и стабильность**:
+  - Перевод менеджеров и делегата приложения (`MusicManager`, `AppDelegate`, `BoringViewModel`, `AppIconManager`) на `@MainActor` и структурированные `Task` вместо `DispatchWorkItem`.
+  - Внедрение зависимостей через инициализаторы, удаление некорректных `@ObservedObject` вне SwiftUI `View`.
+  - Корректное хранение `windowScreenDidChangeObservers` по каждому окну в мультимониторном режиме, замена `@retroactive Hashable` у `CGRect` на безопасную обёртку `ScreenFrameRect`.
+  - Перевод отладочного вывода (`print`/`NSLog`) на системный `os.Logger` с категориями (`Logger.swift`) и устранение потенциально опасных force unwrap (`!`).
+
+---
+
+## 📦 Releases (Скачать)
+
+Актуальные сборки и архивы исходного кода доступны в разделе **[GitHub Releases](https://github.com/satdarovvadim77-rgb/boring.notch/releases)** и в папке [`Releases/`](./Releases):
+
+- 💿 **Установщик macOS (`.dmg`)**: [boringNotch.dmg (GitHub Release)](https://github.com/satdarovvadim77-rgb/boring.notch/releases/latest/download/boringNotch.dmg) · [Releases/boringNotch.dmg](./Releases/boringNotch.dmg)
+- 🗂 **Архив с проектом (`.zip`)**: [boringNotch-project.zip (GitHub Release)](https://github.com/satdarovvadim77-rgb/boring.notch/releases/latest/download/boringNotch-project.zip) · [Releases/boringNotch-project.zip](./Releases/boringNotch-project.zip)
+- 📦 **Собранное приложение (`.app.zip`)**: [boringNotch.app.zip (GitHub Release)](https://github.com/satdarovvadim77-rgb/boring.notch/releases/latest/download/boringNotch.app.zip) · [Releases/boringNotch.app.zip](./Releases/boringNotch.app.zip)
 
 <h1 align="center">
   <br>
@@ -69,7 +109,7 @@ Say hello to **Boring Notch**, the coolest way to make your MacBook’s notch th
 
 
 ### Option 1: Download and Install Manually
-<a href="https://github.com/TheBoredTeam/boring.notch/releases/latest/download/boringNotch.dmg" target="_self"><img width="200" src="https://github.com/user-attachments/assets/e3179be1-8416-4b8a-b417-743e1ecc67d6" alt="Download for macOS" /></a>
+<a href="https://github.com/satdarovvadim77-rgb/boring.notch/releases/latest/download/boringNotch.dmg" target="_self"><img width="200" src="https://github.com/user-attachments/assets/e3179be1-8416-4b8a-b417-743e1ecc67d6" alt="Download for macOS" /></a>
 
 ---
 
