@@ -26,6 +26,7 @@ struct DynamicNotchApp: App {
 
         // Initialize the settings window controller with the updater controller
         SettingsWindowController.shared.setUpdaterController(updaterController)
+        AppIconManager.shared.restoreSavedAppIcon()
     }
 
     var body: some Scene {
@@ -78,6 +79,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         AppIconManager.shared.restoreSavedAppIcon()
         SettingsWindowController.shared.showWindow()
         return true
+    }
+
+    @MainActor
+    func applicationDidBecomeActive(_ notification: Notification) {
+        AppIconManager.shared.restoreSavedAppIcon()
     }
 
     @MainActor

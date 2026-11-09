@@ -33,12 +33,12 @@ final class YandexMusicController: ObservableObject, MediaControllerProtocol {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self = self else { return }
+                var updated = state
                 let lowerBundle = state.bundleIdentifier.lowercased()
-                if state.bundleIdentifier == YandexMusicHelper.bundleIdentifier || lowerBundle.contains("yandex") {
-                    var updated = state
+                if lowerBundle.contains("yandex") || (state.bundleIdentifier.isEmpty && YandexMusicHelper.shared.isRunning) {
                     updated.bundleIdentifier = YandexMusicHelper.bundleIdentifier
-                    self.playbackState = updated
                 }
+                self.playbackState = updated
             }
             .store(in: &cancellables)
     }

@@ -229,18 +229,12 @@ class BoringViewCoordinator: ObservableObject {
     ) {
         sneakPeekDuration = duration
         if type != .music {
-            // close()
             if !Defaults[.hudReplacement] {
                 return
             }
         }
-        Task { @MainActor in
-            withAnimation(.smooth) {
-                self.sneakPeek.show = status
-                self.sneakPeek.type = type
-                self.sneakPeek.value = value
-                self.sneakPeek.icon = icon
-            }
+        withAnimation(.smooth) {
+            self.sneakPeek = boringNotch.sneakPeek(show: status, type: type, value: value, icon: icon)
         }
 
         if type == .mic {
@@ -255,14 +249,12 @@ class BoringViewCoordinator: ObservableObject {
     private func scheduleSneakPeekHide(after duration: TimeInterval) {
         sneakPeekTask?.cancel()
 
-        sneakPeekTask = Task { [weak self] in
+        sneakPeekTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: .seconds(duration))
             guard let self = self, !Task.isCancelled else { return }
-            await MainActor.run {
-                withAnimation {
-                    self.toggleSneakPeek(status: false, type: .music)
-                    self.sneakPeekDuration = 1.5
-                }
+            withAnimation {
+                self.toggleSneakPeek(status: false, type: .music)
+                self.sneakPeekDuration = 1.5
             }
         }
     }
@@ -283,13 +275,8 @@ class BoringViewCoordinator: ObservableObject {
         value: CGFloat = 0,
         browser: BrowserType = .chromium
     ) {
-        Task { @MainActor in
-            withAnimation(.smooth) {
-                self.expandingView.show = status
-                self.expandingView.type = type
-                self.expandingView.value = value
-                self.expandingView.browser = browser
-            }
+        withAnimation(.smooth) {
+            self.expandingView = ExpandedItem(show: status, type: type, value: value, browser: browser)
         }
     }
 

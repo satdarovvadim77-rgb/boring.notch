@@ -92,8 +92,19 @@ extension ContentView {
                                 HStack(alignment: .center) {
                                     Image(systemName: "music.note")
                                     GeometryReader { geo in
-                                        MarqueeText(.constant(musicManager.songTitle + " - " + musicManager.artistName), textColor: Defaults[.playerColorTinting] ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6) : .gray, minDuration: 1, frameWidth: geo.size.width)
+                                        let label = musicManager.artistName.isEmpty
+                                            ? musicManager.songTitle
+                                            : "\(musicManager.songTitle) - \(musicManager.artistName)"
+                                        MarqueeText(
+                                            .constant(label),
+                                            textColor: Defaults[.playerColorTinting]
+                                                ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6)
+                                                : .gray,
+                                            minDuration: 1,
+                                            frameWidth: geo.size.width
+                                        )
                                     }
+                                    .frame(height: 18)
                                 }
                                 .foregroundStyle(.gray)
                                 .padding(.bottom, 10)

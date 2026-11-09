@@ -13,7 +13,9 @@ import Foundation
 final class AppIconManager: ObservableObject {
     static let shared = AppIconManager()
 
-    private var appliedIconID: String?
+    private var cachedIconID: String?
+    private var cachedIconImage: NSImage?
+    private var dockRefreshTask: Task<Void, Never>?
 
     init() {}
 
@@ -138,29 +140,66 @@ final class AppIconManager: ObservableObject {
     /// preserving code signing integrity and Sparkle update compatibility.
     func applyIcon(id: String, refreshDock: Bool = true) {
         Defaults[.selectedAppIconID] = id
-        appliedIconID = id
-        applyRuntimeApplicationIcon(for: id)
+        cachedIconID = nil
+        cachedIconImage = nil
+        restoreSavedAppIcon()
     }
 
     func restoreSavedAppIcon() {
         let currentID = Defaults[.selectedAppIconID]
-        guard appliedIconID != currentID || NSApp.applicationIconImage == nil else { return }
-        appliedIconID = currentID
         applyRuntimeApplicationIcon(for: currentID)
+
+        dockRefreshTask?.cancel()
+        dockRefreshTask = Task { @MainActor [weak self] in
+            for delayMs in [60, 180, 350] {
+                try? await Task.sleep(for: .milliseconds(delayMs))
+                guard !Task.isCancelled, let self = self else { return }
+                self.applyRuntimeApplicationIcon(for: Defaults[.selectedAppIconID])
+            }
+        }
+    }
+
+    private func resolveIconImage(for id: String) -> NSImage? {
+        if cachedIconID == id, let cachedIconImage {
+            return cachedIconImage
+        }
+
+        let resolved: NSImage?
+        if id == "default" {
+            resolved = NSImage(named: "logo2") ?? NSImage(named: "AppIcon")
+        } else if let item = Defaults[.customAppIcons].first(where: { $0.id == id }),
+                  let image = loadImage(for: item) {
+            resolved = image
+        } else {
+            resolved = NSImage(named: "logo2") ?? NSImage(named: "AppIcon")
+        }
+
+        cachedIconID = id
+        cachedIconImage = resolved
+        return resolved
     }
 
     private func applyRuntimeApplicationIcon(for id: String) {
-        if id == "default" {
-            if let defaultImg = NSImage(named: "logo2") ?? NSImage(named: "AppIcon") {
-                NSApp.applicationIconImage = defaultImg
-            } else {
-                NSApp.applicationIconImage = nil
-            }
-        } else if let item = Defaults[.customAppIcons].first(where: { $0.id == id }),
-                  let image = loadImage(for: item) {
+        if let image = resolveIconImage(for: id) {
+            NSApp.applicationIconImage = nil
             NSApp.applicationIconImage = image
+
+            if id == "default" {
+                NSApp.dockTile.contentView = nil
+            } else {
+                let tileSize = NSApp.dockTile.size
+                let frame = NSRect(
+                    origin: .zero,
+                    size: tileSize.width > 0 ? tileSize : NSSize(width: 128, height: 128)
+                )
+                let imageView = NSImageView(frame: frame)
+                imageView.image = image
+                imageView.imageScaling = .scaleProportionallyUpOrDown
+                NSApp.dockTile.contentView = imageView
+            }
         } else {
             NSApp.applicationIconImage = nil
+            NSApp.dockTile.contentView = nil
         }
 
         NSApp.dockTile.display()

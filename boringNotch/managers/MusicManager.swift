@@ -200,6 +200,26 @@ class MusicManager: ObservableObject {
 
     // MARK: - Update Methods
     private func updateFromPlaybackState(_ state: PlaybackState) {
+        let newTitle = state.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let didChangeSongTitle = state.title != self.songTitle && !newTitle.isEmpty
+        if didChangeSongTitle {
+            self.songTitle = state.title
+            self.isTrackTransitioning = false
+            self.trackTransitionTask?.cancel()
+        }
+
+        let newArtist = state.artist.trimmingCharacters(in: .whitespacesAndNewlines)
+        let didChangeArtistName = state.artist != self.artistName && !newArtist.isEmpty
+        if didChangeArtistName {
+            self.artistName = state.artist
+        }
+
+        let newAlbum = state.album.trimmingCharacters(in: .whitespacesAndNewlines)
+        if state.album != self.album && !newAlbum.isEmpty {
+            self.album = state.album
+        }
+
+        let didStartPlaying = state.isPlaying && !self.isPlaying
         if state.isPlaying != self.isPlaying {
             Logger.log("Playback state changed: \(state.isPlaying ? "Playing" : "Paused")", category: .media)
             withAnimation(.smooth) {
@@ -212,7 +232,7 @@ class MusicManager: ObservableObject {
                 self.isTrackTransitioning = false
                 self.trackTransitionTask?.cancel()
                 self.idleClockTimerTask?.cancel()
-                if !state.title.isEmpty && !state.artist.isEmpty {
+                if !newTitle.isEmpty || !self.songTitle.isEmpty {
                     self.updateSneakPeek()
                 }
             } else {
@@ -224,13 +244,13 @@ class MusicManager: ObservableObject {
             self.lastActivePlaybackDate = Date()
         }
 
-        let titleChanged = state.title != self.lastArtworkTitle
-        let artistChanged = state.artist != self.lastArtworkArtist
-        let albumChanged = state.album != self.lastArtworkAlbum
+        let titleChanged = state.title != self.lastArtworkTitle && !newTitle.isEmpty
+        let artistChanged = state.artist != self.lastArtworkArtist && !newArtist.isEmpty
+        let albumChanged = state.album != self.lastArtworkAlbum && !newAlbum.isEmpty
         let bundleChanged = state.bundleIdentifier != self.lastArtworkBundleIdentifier
 
         let artworkChanged = state.artwork != nil && state.artwork != self.artworkData
-        let hasContentChange = titleChanged || artistChanged || albumChanged || artworkChanged || bundleChanged
+        let hasContentChange = titleChanged || artistChanged || albumChanged || artworkChanged || bundleChanged || didChangeSongTitle || didChangeArtistName
 
         if hasContentChange {
             self.triggerFlipAnimation()
@@ -245,18 +265,22 @@ class MusicManager: ObservableObject {
             }
             self.artworkData = state.artwork
 
-            if artworkChanged || state.artwork == nil {
+            if !newTitle.isEmpty {
                 self.lastArtworkTitle = state.title
-                self.lastArtworkArtist = state.artist
-                self.lastArtworkAlbum = state.album
-                self.lastArtworkBundleIdentifier = state.bundleIdentifier
             }
+            if !newArtist.isEmpty {
+                self.lastArtworkArtist = state.artist
+            }
+            if !newAlbum.isEmpty {
+                self.lastArtworkAlbum = state.album
+            }
+            self.lastArtworkBundleIdentifier = state.bundleIdentifier
 
-            if !state.title.isEmpty && !state.artist.isEmpty && state.isPlaying {
+            if (titleChanged || artistChanged || didChangeSongTitle || didStartPlaying) && state.isPlaying && (!newTitle.isEmpty || !self.songTitle.isEmpty) {
                 self.updateSneakPeek()
             }
 
-            self.fetchLyricsIfAvailable(bundleIdentifier: state.bundleIdentifier, title: state.title, artist: state.artist)
+            self.fetchLyricsIfAvailable(bundleIdentifier: state.bundleIdentifier, title: self.songTitle, artist: self.artistName)
         }
 
         let timeChanged = state.currentTime != self.elapsedTime
@@ -265,23 +289,6 @@ class MusicManager: ObservableObject {
         let shuffleChanged = state.isShuffled != self.isShuffled
         let repeatModeChanged = state.repeatMode != self.repeatMode
         let volumeChanged = state.volume != self.volume
-        
-        let newTitle = state.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        if state.title != self.songTitle && !newTitle.isEmpty {
-            self.songTitle = state.title
-            self.isTrackTransitioning = false
-            self.trackTransitionTask?.cancel()
-        }
-
-        let newArtist = state.artist.trimmingCharacters(in: .whitespacesAndNewlines)
-        if state.artist != self.artistName && !newArtist.isEmpty {
-            self.artistName = state.artist
-        }
-
-        let newAlbum = state.album.trimmingCharacters(in: .whitespacesAndNewlines)
-        if state.album != self.album && !newAlbum.isEmpty {
-            self.album = state.album
-        }
 
         if timeChanged {
             self.elapsedTime = state.currentTime
