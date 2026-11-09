@@ -48,6 +48,9 @@ class BoringNotchSkyLightWindow: NSPanel {
         )
         
         configureWindow()
+        if Defaults[.showOnLockScreen] {
+            enableSkyLight()
+        }
         setupObservers()
     }
     
@@ -78,6 +81,16 @@ class BoringNotchSkyLightWindow: NSPanel {
         Defaults.publisher(.hideFromScreenRecording)
             .sink { [weak self] _ in
                 self?.updateSharingType()
+            }
+            .store(in: &observers)
+
+        Defaults.publisher(.showOnLockScreen)
+            .sink { [weak self] change in
+                if change.newValue {
+                    self?.enableSkyLight()
+                } else {
+                    self?.disableSkyLight()
+                }
             }
             .store(in: &observers)
     }

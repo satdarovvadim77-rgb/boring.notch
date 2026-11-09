@@ -26,7 +26,6 @@ struct DynamicNotchApp: App {
 
         // Initialize the settings window controller with the updater controller
         SettingsWindowController.shared.setUpdaterController(updaterController)
-        AppIconManager.shared.restoreSavedAppIcon()
     }
 
     var body: some Scene {
@@ -76,14 +75,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        AppIconManager.shared.restoreSavedAppIcon()
         SettingsWindowController.shared.showWindow()
         return true
-    }
-
-    @MainActor
-    func applicationDidBecomeActive(_ notification: Notification) {
-        AppIconManager.shared.restoreSavedAppIcon()
     }
 
     @MainActor
@@ -117,8 +110,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         isScreenLocked = false
         if !Defaults[.showOnLockScreen] {
             adjustWindowPosition(changeAlpha: true)
-        } else {
-            disableSkyLightOnAllWindows()
         }
     }
     
@@ -252,7 +243,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let window = BoringNotchSkyLightWindow(contentRect: rect, styleMask: styleMask, backing: .buffered, defer: false)
         
-        if isScreenLocked {
+        if Defaults[.showOnLockScreen] {
             window.enableSkyLight()
         } else {
             window.disableSkyLight()
@@ -305,7 +296,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     func applicationDidFinishLaunching(_ notification: Notification) {
-        AppIconManager.shared.restoreSavedAppIcon()
+        if !Defaults[.didMigrateLockScreenDefaultV1] {
+            Defaults[.showOnLockScreen] = true
+            Defaults[.didMigrateLockScreenDefaultV1] = true
+        }
 
         NotificationCenter.default.addObserver(
             self,

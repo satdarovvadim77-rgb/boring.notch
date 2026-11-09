@@ -70,14 +70,12 @@ class SettingsWindowController: NSWindowController {
     func showWindow() {
         // Set app to regular mode first
         NSApp.setActivationPolicy(.regular)
-        AppIconManager.shared.restoreSavedAppIcon()
         
         // If window is already visible, bring it to front properly
         if window?.isVisible == true {
             NSApp.activate(ignoringOtherApps: true)
             window?.orderFrontRegardless()
             window?.makeKeyAndOrderFront(nil)
-            AppIconManager.shared.restoreSavedAppIcon()
             return
         }
         
@@ -88,12 +86,10 @@ class SettingsWindowController: NSWindowController {
         
         // Activate the app and ensure window gets focus
         NSApp.activate(ignoringOtherApps: true)
-        AppIconManager.shared.restoreSavedAppIcon()
         
-        // Force window to front and re-assert custom icon after activation policy transition
+        // Force window to front
         DispatchQueue.main.async { [weak self] in
             self?.window?.makeKeyAndOrderFront(nil)
-            AppIconManager.shared.restoreSavedAppIcon()
         }
     }
     
@@ -123,7 +119,6 @@ extension SettingsWindowController: NSWindowDelegate {
     func windowDidBecomeKey(_ notification: Notification) {
         // Ensure app is in regular mode when window becomes key
         NSApp.setActivationPolicy(.regular)
-        AppIconManager.shared.restoreSavedAppIcon()
     }
     
     func windowDidResignKey(_ notification: Notification) {

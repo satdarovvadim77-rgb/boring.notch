@@ -27,13 +27,6 @@ struct CustomVisualizer: Codable, Hashable, Equatable, Defaults.Serializable {
     var speed: CGFloat = 1.0
 }
 
-struct CustomAppIconItem: Codable, Hashable, Identifiable, Defaults.Serializable {
-    var id: String
-    var name: String
-    var fileName: String
-    var dateAdded: Date
-}
-
 enum CalendarSelectionState: Codable, Defaults.Serializable {
     case all
     case selected(Set<String>)
@@ -200,7 +193,8 @@ extension Defaults.Keys {
     static let energySaverMode = Key<Bool>("energySaverMode", default: false)
     static let reduceLoadOnBattery = Key<Bool>("reduceLoadOnBattery", default: true)
     //static let openLastTabByDefault = Key<Bool>("openLastTabByDefault", default: false)
-    static let showOnLockScreen = Key<Bool>("showOnLockScreen", default: false)
+    static let showOnLockScreen = Key<Bool>("showOnLockScreen", default: true)
+    static let didMigrateLockScreenDefaultV1 = Key<Bool>("didMigrateLockScreenDefault_v1", default: false)
     static let hideFromScreenRecording = Key<Bool>("hideFromScreenRecording", default: false)
     
     // MARK: Appearance
@@ -230,10 +224,6 @@ extension Defaults.Keys {
     static let dateTimeShowSeconds = Key<Bool>("dateTimeShowSeconds", default: false)
     static let dateTime24Hour = Key<Bool>("dateTime24Hour", default: true)
     static let dateTimeShowDayOfWeek = Key<Bool>("dateTimeShowDayOfWeek", default: true)
-
-    // MARK: App Icons
-    static let selectedAppIconID = Key<String>("selectedAppIconID", default: "default")
-    static let customAppIcons = Key<[CustomAppIconItem]>("customAppIcons", default: [])
 
     static let showNotHumanFace = Key<Bool>("showNotHumanFace", default: false)
     static let tileShowLabels = Key<Bool>("tileShowLabels", default: false)

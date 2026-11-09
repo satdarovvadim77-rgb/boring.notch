@@ -19,9 +19,8 @@
   - Улучшена маршрутизация системных медиаклавиш и управление громкостью активного плеера.
 
 ### 🎨 Интерфейс, кастомизация и режимы работы
-- **Пользовательские иконки приложения (`AppIconManager`, `AppIconCropSheet`)**:
-  - Выбор пресетов и загрузка собственной иконки с интерактивным кадрированием.
-  - Безопасная смена иконки в рантайме (`NSApp.applicationIconImage` + `NSApp.dockTile`) только при её реальном изменении — без записи `Icon\r` в `.app`-бандл, без поломки цифровой подписи/Sparkle и без перезапуска Dock.
+- **Отображение на экране блокировки (`BoringNotchSkyLightWindow`)**:
+  - Поддержка вывода чёлки поверх экрана блокировки macOS через SkyLight с отдельным переключателем в настройках (`General` → `Lock Screen`).
 - **Экран даты и времени в Notch (`NotchDateTimeView`)**:
   - Отображение часов, даты и быстрых индикаторов в свёрнутом/развёрнутом состояниях.
 - **Энергосбережение и Игровой режим (`EnergySaverManager`, `GameModeManager`)**:
@@ -35,7 +34,7 @@
 - **Модульность и декомпозиция**:
   - Крупные монолитные файлы разделены на модули: `SettingsView` → `GeneralSettingsView`, `MediaSettingsView`, `AppearanceSettingsView`, `AdvancedSettingsView`; `MusicManager` → `LyricsService`, `ArtworkService`; `ContentView` → `ContentView+Subviews`; `ShelfItemViewModel` → `ShelfItemContextMenu`.
 - **Swift Concurrency и стабильность**:
-  - Перевод менеджеров и делегата приложения (`MusicManager`, `AppDelegate`, `BoringViewModel`, `AppIconManager`) на `@MainActor` и структурированные `Task` вместо `DispatchWorkItem`.
+  - Перевод менеджеров и делегата приложения (`MusicManager`, `AppDelegate`, `BoringViewModel`) на `@MainActor` и структурированные `Task` вместо `DispatchWorkItem`.
   - Внедрение зависимостей через инициализаторы, удаление некорректных `@ObservedObject` вне SwiftUI `View`.
   - Корректное хранение `windowScreenDidChangeObservers` по каждому окну в мультимониторном режиме, замена `@retroactive Hashable` у `CGRect` на безопасную обёртку `ScreenFrameRect`.
   - Перевод отладочного вывода (`print`/`NSLog`) на системный `os.Logger` с категориями (`Logger.swift`) и устранение потенциально опасных force unwrap (`!`).

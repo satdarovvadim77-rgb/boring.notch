@@ -195,21 +195,4 @@ class BoringNotchXPCHelper: NSObject, BoringNotchXPCHelperProtocol {
             return nil
         }()
     }
-
-    // MARK: - Application Bundle Icon Management (Validated)
-
-    @objc func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool, with reply: @escaping (Bool) -> Void) {
-        let requestedURL = URL(fileURLWithPath: bundlePath).standardizedFileURL
-        let expectedURL = ServiceDelegate.enclosingAppBundleURL
-
-        guard requestedURL.path == expectedURL.path,
-              requestedURL.pathExtension == "app" else {
-            Self.logger.error("Rejected setApplicationBundleIcon for unauthorized path: \(bundlePath, privacy: .public)")
-            reply(false)
-            return
-        }
-
-        // Do not mutate the signed .app bundle on disk to preserve code signature and Sparkle compatibility.
-        reply(true)
-    }
 }

@@ -87,6 +87,19 @@ class BoringViewModel: NSObject, ObservableObject {
             .store(in: &cancellables)
         
         setupDetectorObserver()
+
+        var wasSessionRunning = false
+        webcamManager.$isSessionRunning
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRunning in
+                if wasSessionRunning && !isRunning {
+                    withAnimation(.interactiveSpring(response: 0.32, dampingFraction: 0.76, blendDuration: 0)) {
+                        self?.isCameraExpanded = false
+                    }
+                }
+                wasSessionRunning = isRunning
+            }
+            .store(in: &cancellables)
     }
     
     private func setupDetectorObserver() {
@@ -150,12 +163,16 @@ class BoringViewModel: NSObject, ObservableObject {
 
         switch webcamManager.authorizationStatus {
         case .authorized:
-            if webcamManager.isSessionRunning {
+            if isCameraExpanded || webcamManager.isSessionRunning {
                 webcamManager.stopSession()
-                isCameraExpanded = false
+                withAnimation(.interactiveSpring(response: 0.32, dampingFraction: 0.76, blendDuration: 0)) {
+                    isCameraExpanded = false
+                }
             } else if webcamManager.cameraAvailable {
                 webcamManager.startSession()
-                isCameraExpanded = true
+                withAnimation(.interactiveSpring(response: 0.32, dampingFraction: 0.76, blendDuration: 0)) {
+                    isCameraExpanded = true
+                }
             }
 
         case .denied, .restricted:
@@ -213,6 +230,10 @@ class BoringViewModel: NSObject, ObservableObject {
     func close() {
         if SharingStateManager.shared.preventNotchClose {
             return
+        }
+        if isCameraExpanded || webcamManager.isSessionRunning {
+            isCameraExpanded = false
+            webcamManager.stopSession()
         }
         self.notchSize = getClosedNotchSize(screenUUID: self.screenUUID)
         self.closedNotchSize = self.notchSize

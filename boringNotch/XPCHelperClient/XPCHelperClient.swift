@@ -215,25 +215,6 @@ final class XPCHelperClient {
             return false
         }
     }
-
-    // MARK: - App Icon Management (Unsandboxed helper call)
-
-    nonisolated func setApplicationBundleIcon(imageData: Data?, bundlePath: String, refreshDock: Bool) async -> Bool {
-        do {
-            let service = await MainActor.run {
-                ensureRemoteService()
-            }
-            let result: Bool = try await service.withContinuation { service, continuation in
-                service.setApplicationBundleIcon(imageData: imageData, bundlePath: bundlePath, refreshDock: refreshDock) { success in
-                    continuation.resume(returning: success)
-                }
-            }
-            return result
-        } catch {
-            Logger.log("Failed to set app bundle icon via XPC helper: \(error)", category: .debug)
-            return false
-        }
-    }
 }
 
 extension Notification.Name {

@@ -48,6 +48,7 @@ struct CameraPreviewView: View {
                 handleCameraTap()
             }
             .onDisappear {
+                vm.isCameraExpanded = false
                 webcamManager.stopSession()
             }
         }
@@ -62,9 +63,15 @@ struct CameraPreviewView: View {
         switch webcamManager.authorizationStatus {
         case .authorized:
             if webcamManager.isSessionRunning {
+                withAnimation(.interactiveSpring(response: 0.32, dampingFraction: 0.76, blendDuration: 0)) {
+                    vm.isCameraExpanded = false
+                }
                 webcamManager.stopSession()
             } else if webcamManager.cameraAvailable {
                 webcamManager.startSession()
+                withAnimation(.interactiveSpring(response: 0.32, dampingFraction: 0.76, blendDuration: 0)) {
+                    vm.isCameraExpanded = true
+                }
             }
         case .denied, .restricted:
             DispatchQueue.main.async {

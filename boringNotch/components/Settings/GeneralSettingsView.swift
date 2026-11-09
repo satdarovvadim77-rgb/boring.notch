@@ -192,6 +192,7 @@ struct GeneralSettings: View {
             }
 
             NotchBehaviour()
+            LockScreenSection()
             gestureControls()
             GameModeSection()
         }
@@ -276,6 +277,22 @@ struct GeneralSettings: View {
             }
         } header: {
             Text("Notch behavior")
+        }
+    }
+
+    @ViewBuilder
+    func LockScreenSection() -> some View {
+        Section {
+            Defaults.Toggle(key: .showOnLockScreen) {
+                Text("Show notch on lock screen")
+            }
+        } header: {
+            Text("Lock Screen")
+        } footer: {
+            Text("Displays the notch overlay on top of the macOS lock screen.")
+                .multilineTextAlignment(.leading)
+                .foregroundStyle(.secondary)
+                .font(.caption)
         }
     }
 

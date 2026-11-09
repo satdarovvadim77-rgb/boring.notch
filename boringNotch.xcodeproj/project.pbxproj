@@ -120,8 +120,6 @@
 		A10000022D98824300979FB0 /* YandexMusicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012D98824300979FB0 /* YandexMusicHelper.swift */; };
 		A10000042D98824300979FB0 /* YandexMusicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000032D98824300979FB0 /* YandexMusicController.swift */; };
 		A10000062D98824300979FB0 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000052D98824300979FB0 /* VisualEffectView.swift */; };
-		A10000082D98824300979FB0 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000072D98824300979FB0 /* AppIconManager.swift */; };
-		A100000A2D98824300979FB0 /* AppIconCropSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000092D98824300979FB0 /* AppIconCropSheet.swift */; };
 		A100000C2D98824300979FB0 /* GameModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000B2D98824300979FB0 /* GameModeManager.swift */; };
 		A100000E2D98824300979FB0 /* EnergySaverManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000D2D98824300979FB0 /* EnergySaverManager.swift */; };
 		A10000102D98824300979FB0 /* LyricsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000F2D98824300979FB0 /* LyricsService.swift */; };
@@ -306,8 +304,6 @@
 		A10000012D98824300979FB0 /* YandexMusicHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexMusicHelper.swift; sourceTree = "<group>"; };
 		A10000032D98824300979FB0 /* YandexMusicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexMusicController.swift; sourceTree = "<group>"; };
 		A10000052D98824300979FB0 /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
-		A10000072D98824300979FB0 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
-		A10000092D98824300979FB0 /* AppIconCropSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconCropSheet.swift; sourceTree = "<group>"; };
 		A100000B2D98824300979FB0 /* GameModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModeManager.swift; sourceTree = "<group>"; };
 		A100000D2D98824300979FB0 /* EnergySaverManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergySaverManager.swift; sourceTree = "<group>"; };
 		A100000F2D98824300979FB0 /* LyricsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsService.swift; sourceTree = "<group>"; };
@@ -551,7 +547,6 @@
 				A10000112D98824300979FB0 /* ArtworkService.swift */,
 				A100000D2D98824300979FB0 /* EnergySaverManager.swift */,
 				A100000B2D98824300979FB0 /* GameModeManager.swift */,
-				A10000072D98824300979FB0 /* AppIconManager.swift */,
 				11D58EA12E760AE100FA8377 /* ImageService.swift */,
 				F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */,
 				112FB7342CCF16F70015238C /* NotchSpaceManager.swift */,
@@ -772,7 +767,6 @@
 		B18654302C6F4590000B926A /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				A10000092D98824300979FB0 /* AppIconCropSheet.swift */,
 				11F748832ECB27DC00F841DB /* MusicSlotConfigurationView.swift */,
 				11C5E3152DFE88510065821E /* SettingsView.swift */,
 				A10000172D98824300979FB0 /* GeneralSettingsView.swift */,
@@ -1023,8 +1017,6 @@
 				1153BD8F2D986B1F00979FB0 /* MediaControllerProtocol.swift in Sources */,
 				9AB0C6BD2C73C9CB00F7CD30 /* NotchHomeView.swift in Sources */,
 				9AB0C6F22C73C9CB00F7CD30 /* NotchDateTimeView.swift in Sources */,
-				A10000082D98824300979FB0 /* AppIconManager.swift in Sources */,
-				A100000A2D98824300979FB0 /* AppIconCropSheet.swift in Sources */,
 				A100000C2D98824300979FB0 /* GameModeManager.swift in Sources */,
 				A100000E2D98824300979FB0 /* EnergySaverManager.swift in Sources */,
 				A10000102D98824300979FB0 /* LyricsService.swift in Sources */,

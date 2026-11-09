@@ -20,11 +20,6 @@ struct Advanced: View {
     
     @State private var customAccentColor: Color = .accentColor
     @State private var selectedPresetColor: PresetAccentColor? = nil
-
-    @Default(.selectedAppIconID) var selectedAppIconID
-    @Default(.customAppIcons) var customAppIcons
-    @State private var cropItem: CropImageItem? = nil
-    @State private var isPickingImage = false
     
     enum PresetAccentColor: String, CaseIterable, Identifiable {
         case blue = "Blue"
@@ -169,55 +164,6 @@ struct Advanced: View {
             }
             
             Section {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        AppIconCard(
-                            image: Image("logo2"),
-                            title: "Default",
-                            isSelected: selectedAppIconID == "default",
-                            canDelete: false
-                        ) {
-                            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                                AppIconManager.shared.applyIcon(id: "default")
-                            }
-                        }
-
-                        ForEach(customAppIcons) { item in
-                            if let nsImage = AppIconManager.shared.loadImage(for: item) {
-                                AppIconCard(
-                                    image: Image(nsImage: nsImage),
-                                    title: item.name,
-                                    isSelected: selectedAppIconID == item.id,
-                                    canDelete: true,
-                                    onDelete: {
-                                        withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                                            AppIconManager.shared.deleteCustomIcon(item: item)
-                                        }
-                                    }
-                                ) {
-                                    withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                                        AppIconManager.shared.applyIcon(id: item.id)
-                                    }
-                                }
-                            }
-                        }
-
-                        AddAppIconCard {
-                            openFinderImagePicker()
-                        }
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 4)
-                }
-            } header: {
-                Text("App Icon")
-            } footer: {
-                Text("Select an icon or add a custom one from Finder with cropping.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Section {
                 Defaults.Toggle(key: .extendHoverArea) {
                     Text("Extend hover area")
                 }
@@ -236,58 +182,8 @@ struct Advanced: View {
         }
         .accentColor(.effectiveAccent)
         .navigationTitle("Advanced")
-        .sheet(item: $cropItem) { item in
-            AppIconCropSheet(sourceImage: item.image) { croppedImage in
-                let newIndex = customAppIcons.count + 1
-                AppIconManager.shared.saveCustomIcon(image: croppedImage, name: "Custom \(newIndex)")
-                cropItem = nil
-            } onCancel: {
-                cropItem = nil
-            }
-        }
         .onAppear {
             loadCustomColor()
-        }
-    }
-
-    private func openFinderImagePicker() {
-        guard !isPickingImage else { return }
-        isPickingImage = true
-
-        NSApp.activate(ignoringOtherApps: true)
-
-        let panel = NSOpenPanel()
-        panel.title = "Select App Icon Image"
-        panel.prompt = "Choose Image"
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = false
-        panel.allowedContentTypes = [.image, .png, .jpeg, .tiff, .heic]
-
-        panel.begin { response in
-            defer {
-                DispatchQueue.main.async {
-                    self.isPickingImage = false
-                }
-            }
-
-            guard response == .OK, let url = panel.url else { return }
-
-            DispatchQueue.global(qos: .userInitiated).async {
-                let preparedImage: NSImage? = url.accessSecurityScopedResource { safeUrl in
-                    guard let data = try? Data(contentsOf: safeUrl),
-                          let originalImage = NSImage(data: data) else {
-                        return nil
-                    }
-                    return AppIconCropSheet.normalizeImageForCropping(originalImage)
-                }
-
-                if let finalImage = preparedImage {
-                    DispatchQueue.main.async {
-                        self.cropItem = CropImageItem(image: finalImage)
-                    }
-                }
-            }
         }
     }
     
