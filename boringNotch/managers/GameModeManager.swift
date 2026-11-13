@@ -131,11 +131,23 @@ final class GameModeManager: ObservableObject {
     }
 
     private func isGameApp(_ app: NSRunningApplication) -> Bool {
-        // 1. Check bundle's LSApplicationCategoryType
+        // 1. Check bundle's LSApplicationCategoryType & Game Mode flags
         if let bundleURL = app.bundleURL,
            let bundle = Bundle(url: bundleURL) {
             if let category = bundle.infoDictionary?["LSApplicationCategoryType"] as? String,
                category.lowercased().contains("game") {
+                return true
+            }
+            if let supportsGameMode = bundle.infoDictionary?["LSSupportsGameMode"] as? Bool, supportsGameMode {
+                return true
+            }
+            if let supportsGameModeInt = bundle.infoDictionary?["LSSupportsGameMode"] as? Int, supportsGameModeInt == 1 {
+                return true
+            }
+            if let supportsGC = bundle.infoDictionary?["GCSupportsGameMode"] as? Bool, supportsGC {
+                return true
+            }
+            if let supportsGCInt = bundle.infoDictionary?["GCSupportsGameMode"] as? Int, supportsGCInt == 1 {
                 return true
             }
         }
@@ -143,11 +155,11 @@ final class GameModeManager: ObservableObject {
         // 2. Check bundle identifier keywords for games, game stores, and emulators
         if let bundleID = app.bundleIdentifier?.lowercased() {
             let gameKeywords = [
-                "steam", "epicgames", "gog.galaxy", "battlenet", "riotgames",
+                "steam", "epicgames", "gog", "battlenet", "battle.net", "riotgames", "riot",
                 "blizzard", "ea.desktop", "origin", "roblox", "minecraft", "mojang",
                 "unity", "unreal", "whisky", "crossover", "wine", "portingkit",
                 "heroic", "geforcenow", "retroarch", "dolphin", "ryujinx",
-                "pcsx2", "rpcs3", "ppsspp", "mame", "game"
+                "pcsx2", "rpcs3", "ppsspp", "mame", "game", "gaming", "emulator"
             ]
             if gameKeywords.contains(where: { bundleID.contains($0) }) {
                 return true
@@ -157,8 +169,19 @@ final class GameModeManager: ObservableObject {
         // 3. Check executable path for games directories
         if let execURL = app.executableURL {
             let path = execURL.path.lowercased()
-            let gamePaths = ["/steamapps/", "/games/", "/epic games/", "/whisky/", "/crossover/", "wine-preloader", "wineserver"]
+            let gamePaths = [
+                "/steamapps/", "/games/", "/gog games/", "/epic games/",
+                "/whisky/", "/crossover/", "/wine/", "/porting kit/",
+                "wine-preloader", "wineserver"
+            ]
             if gamePaths.contains(where: { path.contains($0) }) {
+                return true
+            }
+        }
+
+        // 4. Check localized name for game keywords
+        if let name = app.localizedName?.lowercased() {
+            if name.contains("game") || name.contains("steam") {
                 return true
             }
         }
@@ -167,28 +190,52 @@ final class GameModeManager: ObservableObject {
     }
 
     private func isFullScreenActive(for app: NSRunningApplication) -> Bool {
-        // 1. Check FullscreenMediaDetector
+        // 1. Check FullscreenMediaDetector space detection
+        if FullscreenMediaDetector.shared.isAppFullscreen(app.bundleIdentifier) {
+            return true
+        }
+
         if FullscreenMediaDetector.shared.fullscreenStatus.values.contains(true) {
             return true
         }
 
-        // 2. Check if main screen has menu bar / dock hidden (standard full screen)
+        // 2. Check system presentation options (set by macOS when frontmost app enters full screen)
+        let presentationOptions = NSApp.currentSystemPresentationOptions
+        if presentationOptions.contains(.fullScreen) || presentationOptions.contains(.autoHideMenuBar) {
+            return true
+        }
+
+        // 3. Check if main screen has menu bar / dock hidden (standard full screen)
         if let screen = NSScreen.main {
-            if screen.frame.height == screen.visibleFrame.height &&
-               screen.frame.maxY == screen.visibleFrame.maxY {
+            let safeTop = screen.safeAreaInsets.top
+            let menuBarHidden = (screen.frame.maxY - screen.visibleFrame.maxY) <= (safeTop + 1)
+            let dockHidden = screen.visibleFrame.minY <= (screen.frame.minY + 1) &&
+                             screen.visibleFrame.height >= (screen.frame.height - safeTop - 1)
+            if menuBarHidden && dockHidden {
                 return true
             }
         }
 
-        // 3. Check CGWindowList for a window owned by this app covering the screen
+        // 4. Check CGWindowList for a window owned by this app covering the screen
         let options: CGWindowListOption = [.optionOnScreenOnly, .excludeDesktopElements]
         if let windowList = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[String: Any]] {
             for info in windowList {
-                if let pid = info[kCGWindowOwnerPID as String] as? pid_t, pid == app.processIdentifier,
-                   let boundsDict = info[kCGWindowBounds as String] as? [String: CGFloat],
-                   let w = boundsDict["Width"], let h = boundsDict["Height"] {
+                guard let pid = info[kCGWindowOwnerPID as String] as? pid_t, pid == app.processIdentifier else {
+                    continue
+                }
+
+                var bounds = CGRect.zero
+                if let boundsDict = info[kCGWindowBounds as String] as? [String: Any],
+                   CGRectMakeWithDictionaryRepresentation(boundsDict as CFDictionary, &bounds) {
                     for screen in NSScreen.screens {
-                        if abs(w - screen.frame.width) < 5 && abs(h - screen.frame.height) < 5 {
+                        let screenFrame = screen.frame
+                        let safeTop = screen.safeAreaInsets.top
+                        let matchesWidth = abs(bounds.width - screenFrame.width) < 15
+                        let matchesFullHeight = abs(bounds.height - screenFrame.height) < 15
+                        let matchesNotchHeight = abs(bounds.height - (screenFrame.height - safeTop)) < 15
+                        let matchesVisibleHeight = abs(bounds.height - screen.visibleFrame.height) < 15
+
+                        if matchesWidth && (matchesFullHeight || matchesNotchHeight || matchesVisibleHeight) {
                             return true
                         }
                     }

@@ -225,6 +225,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     private func handleDragEntersNotchRegion(onScreen screen: NSScreen) {
+        GameModeManager.shared.evaluateGameModeState()
+        if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
+            return
+        }
         guard let uuid = screen.displayUUID else { return }
         
         if Defaults[.showOnAllDisplays], let viewModel = viewModels[uuid] {
@@ -307,6 +311,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil
         )
+
+        _ = GameModeManager.shared
 
         NotificationCenter.default.addObserver(
             forName: Notification.Name.selectedScreenChanged, object: nil, queue: nil

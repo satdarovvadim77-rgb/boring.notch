@@ -15,6 +15,7 @@ final class FullscreenMediaDetector: ObservableObject {
     static let shared = FullscreenMediaDetector()
     
     @Published var fullscreenStatus: [String: Bool] = [:]
+    @Published private(set) var currentSpaces: [MacroVisionKit.FullScreenMonitor.SpaceInfo] = []
     
     private var monitorTask: Task<Void, Never>?
     
@@ -36,6 +37,7 @@ final class FullscreenMediaDetector: ObservableObject {
     }
     
     private func updateStatus(with spaces: [MacroVisionKit.FullScreenMonitor.SpaceInfo]) {
+        self.currentSpaces = spaces
         var newStatus: [String: Bool] = [:]
         
         for space in spaces {
@@ -51,6 +53,11 @@ final class FullscreenMediaDetector: ObservableObject {
         }
         
         self.fullscreenStatus = newStatus
+    }
+
+    func isAppFullscreen(_ bundleIdentifier: String?) -> Bool {
+        guard let bundleID = bundleIdentifier else { return false }
+        return currentSpaces.contains { $0.runningApps.contains(bundleID) }
     }
 }
 

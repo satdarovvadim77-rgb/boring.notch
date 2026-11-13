@@ -323,6 +323,7 @@ struct ContentView: View {
     }
 
     func doOpen() {
+        GameModeManager.shared.evaluateGameModeState()
         if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
             return
         }
@@ -336,9 +337,13 @@ struct ContentView: View {
     private func handleHover(_ hovering: Bool) {
         hoverTask?.cancel()
         
+        GameModeManager.shared.evaluateGameModeState()
         if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
             if isHovering {
                 isHovering = false
+            }
+            if vm.notchState == .open && !SharingStateManager.shared.preventNotchClose {
+                vm.close()
             }
             return
         }
@@ -360,6 +365,12 @@ struct ContentView: View {
                 try? await Task.sleep(for: .seconds(Defaults[.minimumHoverDuration]))
                 guard !Task.isCancelled else { return }
                 
+                GameModeManager.shared.evaluateGameModeState()
+                if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
+                    self.isHovering = false
+                    return
+                }
+
                 guard self.vm.notchState == .closed,
                       self.isHovering,
                       !self.coordinator.sneakPeek.show else { return }
@@ -385,6 +396,7 @@ struct ContentView: View {
     // MARK: - Gesture Handling
 
     private func handleDownGesture(translation: CGFloat, phase: NSEvent.Phase) {
+        GameModeManager.shared.evaluateGameModeState()
         if GameModeManager.shared.isGameModeActive && Defaults[.disableHoverInGameMode] {
             return
         }
